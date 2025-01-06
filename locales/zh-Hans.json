@@ -1,0 +1,5 @@
+{
+	"About": "关于",
+	"LineWidthCalculation": "线宽计算",
+	"AboutDescription": "插件版本 v${1}\n该计算器依据 IPC-2221 标准下计算， 由此求得的结果是估算值，实际结果会随应用条件而发生变化\n作者：xiao_wine"
+}

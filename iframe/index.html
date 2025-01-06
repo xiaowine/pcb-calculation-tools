@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh-Hans">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>PCB 印制线宽度计算器</title>
+		<style>
+			:root {
+				--primary-color: #2196f3;
+				--hover-color: #1976d2;
+				--background-color: #f5f5f5;
+				--card-background: #ffffff;
+				--text-color: #333;
+				--text-secondary: #666;
+				--text-tertiary: #888;
+				--border-color: #eee;
+				--input-border: #ddd;
+				--shadow-color: rgba(0, 0, 0, 0.1);
+				--button-text: #fff;
+				scrollbar-width: none; /* Firefox */
+				-ms-overflow-style: none; /* IE and Edge */
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--primary-color: #2196f3;
+					--hover-color: #1976d2;
+					--background-color: #1a1a1a;
+					--card-background: #242424;
+					--text-color: #e1e1e1;
+					--text-secondary: #a1a1a1;
+					--text-tertiary: #808080;
+					--border-color: #383838;
+					--input-border: #383838;
+					--shadow-color: rgba(0, 0, 0, 0.3);
+					--button-text: #fff;
+				}
+			}
+
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+				max-width: 1000px;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				background-color: var(--background-color);
+				color: var(--text-color);
+				line-height: 1.6;
+			}
+
+			body::-webkit-scrollbar {
+				display: none; /* Chrome, Safari and Opera */
+			}
+
+			.calculator-card {
+				background: var(--card-background);
+				padding: 2rem;
+				border-radius: 8px;
+				box-shadow: 0 2px 4px var(--shadow-color);
+			}
+
+			h1 {
+				color: var(--text-color);
+				text-align: center;
+				margin-bottom: 2rem;
+			}
+
+			.calculator-container {
+				display: flex;
+				gap: 2rem;
+
+				align-items: start;
+				position: relative;
+			}
+
+			.input-section {
+				flex: 1;
+				padding-right: 2rem;
+				border-right: 1px solid var(--border-color);
+			}
+
+			.results-section {
+				flex: 1;
+				padding-left: 1rem;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				min-height: 300px;
+			}
+
+			.input-group {
+				display: flex;
+				flex-direction: column;
+			}
+
+			label {
+				margin-bottom: 0.5rem;
+				color: var(--text-secondary);
+				font-weight: 500;
+			}
+
+			input[type='number'] {
+				padding: 0.8rem;
+				border: 1px solid var(--input-border);
+				border-radius: 4px;
+				font-size: 1rem;
+				transition: border-color 0.3s ease;
+				background-color: var(--card-background);
+				color: var(--text-color);
+			}
+
+			input[type='number']:focus {
+				outline: none;
+				border-color: var(--primary-color);
+				box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.15);
+			}
+
+			input[type='submit'] {
+				background-color: var(--primary-color);
+				color: white;
+				padding: 1rem;
+				border: none;
+				border-radius: 4px;
+				font-size: 1rem;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+				margin-top: 1rem;
+			}
+
+			input[type='submit']:hover {
+				background-color: var(--hover-color);
+			}
+
+			.result-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.5rem 0;
+			}
+
+			.result-value {
+				font-weight: bold;
+				color: var(--primary-color);
+			}
+
+			@media (max-width: 768px) {
+				.calculator-container {
+					flex-direction: column;
+				}
+
+				.input-section {
+					padding-right: 0;
+					border-right: none;
+					border-bottom: 1px solid var(--border-color);
+					padding-bottom: 2rem;
+				}
+
+				.results-section {
+					padding-left: 0;
+					padding-top: 2rem;
+					min-height: auto;
+				}
+
+				.parameters-note {
+					position: static;
+					margin-top: 2rem;
+					text-align: left;
+					padding: 0;
+				}
+
+				.parameters-list {
+					justify-content: flex-start;
+				}
+			}
+
+			input[type='number']::-webkit-inner-spin-button,
+			input[type='number']::-webkit-outer-spin-button {
+				-webkit-appearance: none;
+				margin: 0;
+			}
+
+			input[type='number'] {
+				-moz-appearance: textfield; /* Firefox */
+			}
+
+			.parameters-note {
+				position: absolute;
+				bottom: -2rem;
+				right: 0;
+				font-size: 0.75rem;
+				color: var(--text-secondary);
+				text-align: right;
+				padding: 0.5rem;
+				background: var(--card-background);
+				border-radius: 4px;
+			}
+
+			.parameters-note h4 {
+				margin: 0 0 0.25rem 0;
+				font-size: 0.8rem;
+				color: var(--text-secondary);
+				font-weight: normal;
+			}
+
+			.parameters-list {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: flex;
+
+				gap: 1rem;
+				flex-wrap: wrap;
+				justify-content: flex-end;
+			}
+
+			.parameters-list li {
+				margin: 0;
+				white-space: nowrap;
+			}
+
+			.parameter-name {
+				color: var(--text-tertiary);
+				margin-right: 0.25rem;
+			}
+
+			/* 添加提示文本的样式 */
+			.input-hint {
+				font-size: 0.75rem;
+				color: var(--text-secondary);
+				margin-top: 0.25rem;
+			}
+
+			/* 添加切换按钮样式 */
+			.mode-switch {
+				position: absolute;
+				top: -3rem;
+				right: 0;
+				display: flex;
+				gap: 0.5rem;
+				background: var(--card-background);
+				padding: 0.5rem;
+				border-radius: 4px;
+				box-shadow: 0 1px 3px var(--shadow-color);
+			}
+
+			.mode-switch button {
+				padding: 0.5rem 1rem;
+				border: 1px solid var(--primary-color);
+				background: transparent;
+				color: var(--primary-color);
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 0.875rem;
+				transition: all 0.3s ease;
+			}
+
+			.mode-switch button.active {
+				background: var(--primary-color);
+				color: var(--button-text);
+			}
+
+			/* 调整移动端样式 */
+			@media (max-width: 768px) {
+				.mode-switch {
+					position: static;
+					margin-bottom: 1rem;
+					justify-content: center;
+				}
+			}
+		</style>
+		<script>
+			let currentMode = 'width'; // 'width' 或 'current'
+
+			function switchMode(mode) {
+				currentMode = mode;
+				// 更新按钮状态
+				document.querySelectorAll('.mode-switch button').forEach((btn) => {
+					btn.classList.toggle('active', btn.dataset.mode === mode);
+				});
+
+				// 更新输入标签和占位符
+				if (mode === 'width') {
+					document.getElementById('currentLabel').textContent = '电流 (A)';
+					document.getElementById('resultInnerLabel').textContent = '内层印制线宽度:';
+					document.getElementById('resultOuterLabel').textContent = '外层印制线宽度:';
+					document.getElementById('resultInnerUnit').textContent = 'mils';
+					document.getElementById('resultOuterUnit').textContent = 'mils';
+				} else {
+					document.getElementById('currentLabel').textContent = '线宽 (mils)';
+					document.getElementById('resultInnerLabel').textContent = '内层最大电流:';
+					document.getElementById('resultOuterLabel').textContent = '外层最大电流:';
+					document.getElementById('resultInnerUnit').textContent = 'A';
+					document.getElementById('resultOuterUnit').textContent = 'A';
+				}
+
+				// 清空输入和结果
+				document.getElementById('current').value = '';
+				document.getElementById('resultInner').textContent = '-';
+				document.getElementById('resultOuter').textContent = '-';
+			}
+
+			function calculateTraceWidth() {
+				// 获取用户输入
+				var inputValue = parseFloat(document.getElementById('current').value) || 0;
+				var tempRise = parseFloat(document.getElementById('tempRise').value) || 0;
+				var copperThickness = parseFloat(document.getElementById('copperThickness').value) || 0;
+
+				// 如果所有输入都有值才进行计算
+				if (inputValue && tempRise && copperThickness) {
+					var kInner = 0.024;
+					var kOuter = 0.048;
+					var b = 0.44;
+					var c = 0.725;
+
+					if (currentMode === 'width') {
+						// 正向计算：电流 -> 线宽
+						var widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * 1.378);
+						var widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * 1.378);
+
+						document.getElementById('resultInner').textContent = widthInnerMils.toFixed(2);
+						document.getElementById('resultOuter').textContent = widthOuterMils.toFixed(2);
+					} else {
+						// 反向计算：线宽 -> 电流
+						var currentInner = kInner * Math.pow(tempRise, b) * Math.pow(inputValue * copperThickness * 1.378, c);
+						var currentOuter = kOuter * Math.pow(tempRise, b) * Math.pow(inputValue * copperThickness * 1.378, c);
+
+						document.getElementById('resultInner').textContent = currentInner.toFixed(2);
+						document.getElementById('resultOuter').textContent = currentOuter.toFixed(2);
+					}
+				} else {
+					document.getElementById('resultInner').textContent = '-';
+					document.getElementById('resultOuter').textContent = '-';
+				}
+			}
+
+			// 页面加载完成后添加事件监听
+			document.addEventListener('DOMContentLoaded', function () {
+				const inputs = ['current', 'tempRise', 'copperThickness'];
+				inputs.forEach((id) => {
+					document.getElementById(id).addEventListener('input', calculateTraceWidth);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="calculator-card">
+			<h1>PCB 印制线宽度计算器</h1>
+			<div class="calculator-container">
+				<div class="mode-switch">
+					<button class="active" data-mode="width" onclick="switchMode('width')">正向计算</button>
+					<button data-mode="current" onclick="switchMode('current')">反向计算</button>
+				</div>
+				<div class="input-section">
+					<form onsubmit="event.preventDefault(); calculateTraceWidth();">
+						<div class="input-group">
+							<label id="currentLabel" for="current">电流 (A)</label>
+							<input type="number" id="current" name="current" required step="0.1" min="0" />
+						</div>
+
+						<div class="input-group">
+							<label for="tempRise">温升 (°C)</label>
+							<input type="number" id="tempRise" name="tempRise" required step="0.1" min="0" />
+						</div>
+
+						<div class="input-group">
+							<label for="copperThickness">铜箔厚度 (oz)</label>
+							<input type="number" id="copperThickness" name="copperThickness" required step="0.1" min="0" />
+							<div class="input-hint">嘉立创免费打印的外层铜箔厚度为1oz，内层0.5oz</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="results-section">
+					<div class="results">
+						<div class="result-item">
+							<span id="resultInnerLabel">内层印制线宽度:</span>
+							<span class="result-value">
+								<span id="resultInner">-</span>
+								<span id="resultInnerUnit">mils</span>
+							</span>
+						</div>
+						<div class="result-item">
+							<span id="resultOuterLabel">外层印制线宽度:</span>
+							<span class="result-value">
+								<span id="resultOuter">-</span>
+								<span id="resultOuterUnit">mils</span>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="parameters-note">
+					<h4>计算参数</h4>
+					<ul class="parameters-list">
+						<li><span class="parameter-name">k<sub>inner</sub>:</span>0.024</li>
+						<li><span class="parameter-name">k<sub>outer</sub>:</span>0.048</li>
+						<li><span class="parameter-name">b:</span>0.44</li>
+						<li><span class="parameter-name">c:</span>0.725</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

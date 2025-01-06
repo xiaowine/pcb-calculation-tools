@@ -1,0 +1,59 @@
+{
+	"name": "auxiliary-calculations",
+	"uuid": "42e308c13d86407cac8704f9daca4d0f",
+	"displayName": "辅助计算",
+	"description": "",
+	"version": "1.0.0",
+	"publisher": "xiao_wine <xiaowine0#gmail.com>",
+	"engines": {
+		"eda": "^2.2.32"
+	},
+	"license": "MIT License",
+	"repository": {
+		"type": "extension-store",
+		"url": ""
+	},
+	"categories": "Tool",
+	"keywords": ["Tool"],
+	"images": {
+		"logo": "./images/logo.png"
+	},
+	"homepage": "",
+	"bugs": "",
+	"activationEvents": {},
+	"entry": "./dist/index",
+	"dependentExtensions": {},
+	"headerMenus": {
+		"home": [
+			{
+				"id": "home_auxiliary_calculations",
+				"title": "辅助计算",
+				"menuItems": [
+					{
+						"id": "about",
+						"title": "About",
+						"registerFn": "about"
+					}
+				]
+			}
+		],
+		"pcb": [
+			{
+				"id": "pcb_auxiliary_calculations",
+				"title": "辅助计算",
+				"menuItems": [
+					{
+						"id": "line_width_calculation",
+						"title": "LineWidthCalculation",
+						"registerFn": "line_width_calculation"
+					},
+					{
+						"id": "about",
+						"title": "About",
+						"registerFn": "about"
+					}
+				]
+			}
+		]
+	}
+}
