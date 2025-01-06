@@ -266,9 +266,48 @@
 					justify-content: center;
 				}
 			}
+
+			/* 添加单位切换按钮样式 */
+			.unit-switch {
+				position: absolute;
+				top: -3rem;
+				left: 0;
+				display: flex;
+				gap: 0.5rem;
+				background: var(--card-background);
+				padding: 0.5rem;
+				border-radius: 4px;
+				box-shadow: 0 1px 3px var(--shadow-color);
+			}
+
+			.unit-switch button {
+				padding: 0.5rem 1rem;
+				border: 1px solid var(--primary-color);
+				background: transparent;
+				color: var(--primary-color);
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 0.875rem;
+				transition: all 0.3s ease;
+			}
+
+			.unit-switch button.active {
+				background: var(--primary-color);
+				color: var(--button-text);
+			}
+
+			@media (max-width: 768px) {
+				.unit-switch {
+					position: static;
+					margin-bottom: 1rem;
+					justify-content: center;
+				}
+			}
 		</style>
 		<script>
 			let currentMode = 'width'; // 'width' 或 'current'
+			let currentUnit = 'mils'; // 'mils' 或 'mm'
+			const MIL_TO_MM = 0.0254; // 1 mil = 0.0254 mm
 
 			function switchMode(mode) {
 				currentMode = mode;
@@ -282,10 +321,11 @@
 					document.getElementById('currentLabel').textContent = '电流 (A)';
 					document.getElementById('resultInnerLabel').textContent = '内层印制线宽度:';
 					document.getElementById('resultOuterLabel').textContent = '外层印制线宽度:';
-					document.getElementById('resultInnerUnit').textContent = 'mils';
-					document.getElementById('resultOuterUnit').textContent = 'mils';
+					document.getElementById('resultInnerUnit').textContent = currentUnit;
+					document.getElementById('resultOuterUnit').textContent = currentUnit;
 				} else {
-					document.getElementById('currentLabel').textContent = '线宽 (mils)';
+					// 反向计算时，输入标签也要跟随当前单位
+					document.getElementById('currentLabel').textContent = `线宽 (${currentUnit})`;
 					document.getElementById('resultInnerLabel').textContent = '内层最大电流:';
 					document.getElementById('resultOuterLabel').textContent = '外层最大电流:';
 					document.getElementById('resultInnerUnit').textContent = 'A';
@@ -296,6 +336,22 @@
 				document.getElementById('current').value = '';
 				document.getElementById('resultInner').textContent = '-';
 				document.getElementById('resultOuter').textContent = '-';
+			}
+
+			function switchUnit(unit) {
+				currentUnit = unit;
+				// 更新按钮状态
+				document.querySelectorAll('.unit-switch button').forEach((btn) => {
+					btn.classList.toggle('active', btn.dataset.unit === unit);
+				});
+
+				// 如果是反向计算模式，更新输入标签的单位
+				if (currentMode === 'current') {
+					document.getElementById('currentLabel').textContent = `线宽 (${unit})`;
+				}
+
+				// 重新计算并显示结果
+				calculateTraceWidth();
 			}
 
 			function calculateTraceWidth() {
@@ -316,15 +372,30 @@
 						var widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * 1.378);
 						var widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * 1.378);
 
-						document.getElementById('resultInner').textContent = widthInnerMils.toFixed(2);
-						document.getElementById('resultOuter').textContent = widthOuterMils.toFixed(2);
+						// 根据当前单位转换
+						if (currentUnit === 'mm') {
+							document.getElementById('resultInner').textContent = (widthInnerMils * MIL_TO_MM).toFixed(3);
+							document.getElementById('resultOuter').textContent = (widthOuterMils * MIL_TO_MM).toFixed(3);
+							document.getElementById('resultInnerUnit').textContent = 'mm';
+							document.getElementById('resultOuterUnit').textContent = 'mm';
+						} else {
+							document.getElementById('resultInner').textContent = widthInnerMils.toFixed(2);
+							document.getElementById('resultOuter').textContent = widthOuterMils.toFixed(2);
+							document.getElementById('resultInnerUnit').textContent = 'mils';
+							document.getElementById('resultOuterUnit').textContent = 'mils';
+						}
 					} else {
 						// 反向计算：线宽 -> 电流
-						var currentInner = kInner * Math.pow(tempRise, b) * Math.pow(inputValue * copperThickness * 1.378, c);
-						var currentOuter = kOuter * Math.pow(tempRise, b) * Math.pow(inputValue * copperThickness * 1.378, c);
+						// 如果当前单位是mm，需要先转换为mils
+						var widthInMils = currentUnit === 'mm' ? inputValue / MIL_TO_MM : inputValue;
+
+						var currentInner = kInner * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * 1.378, c);
+						var currentOuter = kOuter * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * 1.378, c);
 
 						document.getElementById('resultInner').textContent = currentInner.toFixed(2);
 						document.getElementById('resultOuter').textContent = currentOuter.toFixed(2);
+						document.getElementById('resultInnerUnit').textContent = 'A';
+						document.getElementById('resultOuterUnit').textContent = 'A';
 					}
 				} else {
 					document.getElementById('resultInner').textContent = '-';
@@ -345,6 +416,10 @@
 		<div class="calculator-card">
 			<h1>PCB 印制线宽度计算器</h1>
 			<div class="calculator-container">
+				<div class="unit-switch">
+					<button class="active" data-unit="mils" onclick="switchUnit('mils')">mils</button>
+					<button data-unit="mm" onclick="switchUnit('mm')">mm</button>
+				</div>
 				<div class="mode-switch">
 					<button class="active" data-mode="width" onclick="switchMode('width')">正向计算</button>
 					<button data-mode="current" onclick="switchMode('current')">反向计算</button>
