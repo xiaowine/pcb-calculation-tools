@@ -1,51 +1,22 @@
-[简体中文](#) | [English](./README.en.md) | [繁體中文](./README.zh-Hant.md) | [日本語](./README.ja.md) | [Русский](./README.ru.md)
+# LCEDA_Assisted_Computing_Plugin
 
-# pro-api-sdk
+嘉立创EDA 辅助计算插件
 
-嘉立创EDA & EasyEDA 专业版扩展 API 开发工具
+## ![](https://socialify.git.ci/xiaowine/LCEDA_Assisted_Computing_Plugin/image?description=1&descriptionEditable=%e5%98%89%e7%ab%8b%e5%88%9bEDA+%e8%be%85%e5%8a%a9%e8%ae%a1%e7%ae%97%e6%8f%92%e4%bb%b6&language=1&name=1&owner=1&theme=Auto)
 
-<a href="https://github.com/easyeda/pro-api-sdk" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/github/stars/easyeda/pro-api-sdk" alt="GitHub Repo Stars" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>&nbsp;<a href="https://github.com/easyeda/pro-api-sdk/issues" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/github/issues/easyeda/pro-api-sdk" alt="GitHub Issues" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>&nbsp;<a href="https://github.com/easyeda/pro-api-sdk" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/github/repo-size/easyeda/pro-api-sdk" alt="GitHub Repo Size" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>&nbsp;<a href="https://choosealicense.com/licenses/apache-2.0/" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/github/license/easyeda/pro-api-sdk" alt="GitHub License" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>&nbsp;<a href="https://www.npmjs.com/package/@jlceda/pro-api-types" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/npm/v/%40jlceda%2Fpro-api-types?label=pro-api-types" alt="NPM Version" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>&nbsp;<a href="https://www.npmjs.com/package/@jlceda/pro-api-types" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/npm/d18m/%40jlceda%2Fpro-api-types" alt="NPM Downloads" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>
+---
 
-> [!NOTE]
->
-> 详细开发文档请访问：[https://prodocs.lceda.cn/cn/api/guide/](https://prodocs.lceda.cn/cn/api/guide/)
+![Release Download](https://img.shields.io/github/downloads/xiaowine/LCEDA_Assisted_Computing_Plugin/total?style=flat-square)  
+![Release Download](https://img.shields.io/github/downloads/xiaowine/LCEDA_Assisted_Computing_Plugin/total?style=flat-square)  
+[![Release Version](https://img.shields.io/github/v/release/xiaowine/LCEDA_Assisted_Computing_Plugin?style=flat-square)](https://github.com/xiaowine/LCEDA_Assisted_Computing_Plugin/releases/latest)  
+[![GitHub license](https://img.shields.io/github/license/xiaowine/LCEDA_Assisted_Computing_Plugin?style=flat-square)](https://github.com/xiaowine/LCEDA_Assisted_Computing_Plugin/LICENSE)  
+[![GitHub Star](https://img.shields.io/github/stars/xiaowine/LCEDA_Assisted_Computing_Plugin?style=flat-square)](https://github.com/xiaowine/LCEDA_Assisted_Computing_Plugin/stargazers)  
+[![GitHub Fork](https://img.shields.io/github/forks/xiaowine/LCEDA_Assisted_Computing_Plugin?style=flat-square)](https://github.com/xiaowine/LCEDA_Assisted_Computing_Plugin/network/members)  
+![GitHub Repo size](https://img.shields.io/github/repo-size/xiaowine/LCEDA_Assisted_Computing_Plugin?style=flat-square&color=3cb371)  
+[![GitHub Repo Languages](https://img.shields.io/github/languages/top/xiaowine/LCEDA_Assisted_Computing_Plugin?style=flat-square)](https://github.com/xiaowine/LCEDA_Assisted_Computing_Plugin/search?l=koltin)  
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2F577fkj%2FStatusBarLyric%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/xiaowine/LCEDA_Assisted_Computing_Plugin/goto?ref=main)  
+![GitHub Star](https://img.shields.io/github/stars/xiaowine/LCEDA_Assisted_Computing_Plugin.svg?style=social)
 
-## 进入开发
+## Star History
 
-本开发工具组包含了用于开发 [嘉立创EDA专业版](https://pro.lceda.cn/) 扩展包的所有环境和工具，并内置了 Prettier 和 ESLint 的推荐规则。
-
-1. 克隆 [pro-api-sdk](https://github.com/easyeda/pro-api-sdk) 项目仓库到本地
-
-    Gitee:
-
-    ```shell
-    git clone --depth=1 https://gitee.com/jlceda/pro-api-sdk.git
-    ```
-
-    GitHub:
-
-    ```shell
-    git clone --depth=1 https://github.com/easyeda/pro-api-sdk.git
-    ```
-
-2. 初始化开发环境（安装依赖）
-
-    ```shell
-    npm install
-    ```
-
-3. 进行些许变更 ...
-
-4. 编译扩展包
-
-    ```shell
-    npm run build
-    ```
-
-5. 在 嘉立创EDA专业版 中安装生成在 `./build/dist/` 下的扩展包
-
-## 开源许可
-
-<a href="https://choosealicense.com/licenses/apache-2.0/" style="vertical-align: inherit;" target="_blank"><img src="https://img.shields.io/github/license/easyeda/pro-api-sdk" alt="GitHub License" class="not-medium-zoom-image" style="display: inline; vertical-align: inherit;" /></a>
-
-本开发工具组使用 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/) 开源许可协议，你仅可以将 **嘉立创EDA**、**EasyEDA** 商标信息用于依托于本工具组开发的扩展包的 **功能描述部分** 和 **开源发布的标题部分**。
+[![Star History Chart](https://api.star-history.com/svg?repos=xiaowine/LCEDA_Assisted_Computing_Plugin&type=Timeline)](https://star-history.com/#xiaowine/LCEDA_Assisted_Computing_Plugin&Timeline)
