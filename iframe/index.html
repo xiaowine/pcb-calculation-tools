@@ -303,112 +303,266 @@
 					justify-content: center;
 				}
 			}
+
+			/* 添加应用按钮样式 */
+			.apply-width-btn {
+				margin-top: 0.5rem;
+				padding: 0.5rem 1rem;
+				border: 1px solid var(--primary-color);
+				background: transparent;
+				color: var(--primary-color);
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 0.875rem;
+				transition: all 0.3s ease;
+			}
+
+			.apply-width-btn:hover {
+				background: var(--primary-color);
+				color: var(--button-text);
+			}
+
+			/* 修改可见性类，用于反向计算时隐藏按钮 */
+			.apply-width-btn.hidden {
+				display: none;
+			}
 		</style>
 		<script>
-			let currentMode = 'width'; // 'width' 或 'current'
-			let currentUnit = 'mils'; // 'mils' 或 'mm'
-			const MIL_TO_MM = 0.0254; // 1 mil = 0.0254 mm
+			// DOM 元素引用
+			const DOM = {
+				trackInput: null,
+				trackLabel: null,
+				tempRise: null,
+				copperThickness: null,
+				innerLabel: null,
+				outerLabel: null,
+				innerResult: null,
+				outerResult: null,
+				innerUnit: null,
+				outerUnit: null,
+				applyWidthBtn: null,
+				modeButtons: null,
+				unitButtons: null,
+			};
 
-			function switchMode(mode) {
-				currentMode = mode;
-				// 更新按钮状态
-				document.querySelectorAll('.mode-switch button').forEach((btn) => {
-					btn.classList.toggle('active', btn.dataset.mode === mode);
-				});
+			// 常量定义
+			const UNIT_MIL_TO_MM = 0.0254;
+			const TRACK_EVENT_ID = '1';
+			const CALC_PARAMS = {
+				kInner: 0.024,
+				kOuter: 0.048,
+				b: 0.44,
+				c: 0.725,
+				copperFactor: 1.378,
+			};
 
-				// 更新输入标签和占位符
-				if (mode === 'width') {
-					document.getElementById('currentLabel').textContent = '电流 (A)';
-					document.getElementById('resultInnerLabel').textContent = '内层印制线宽度:';
-					document.getElementById('resultOuterLabel').textContent = '外层印制线宽度:';
-					document.getElementById('resultInnerUnit').textContent = currentUnit;
-					document.getElementById('resultOuterUnit').textContent = currentUnit;
-				} else {
-					// 反向计算时，输入标签也要跟随当前单位
-					document.getElementById('currentLabel').textContent = `线宽 (${currentUnit})`;
-					document.getElementById('resultInnerLabel').textContent = '内层最大电流:';
-					document.getElementById('resultOuterLabel').textContent = '外层最大电流:';
-					document.getElementById('resultInnerUnit').textContent = 'A';
-					document.getElementById('resultOuterUnit').textContent = 'A';
-				}
+			// 状态变量
+			let calculationMode = 'width';
+			let displayUnit = 'mils';
 
-				// 清空输入和结果
-				document.getElementById('current').value = '';
-				document.getElementById('resultInner').textContent = '-';
-				document.getElementById('resultOuter').textContent = '-';
+			// 初始化 DOM 元素引用
+			function initializeDOMReferences() {
+				DOM.trackInput = document.getElementById('trackInput');
+				DOM.trackLabel = document.getElementById('trackLabel');
+				DOM.tempRise = document.getElementById('tempRise');
+				DOM.copperThickness = document.getElementById('copperThickness');
+				DOM.innerLabel = document.getElementById('innerLabel');
+				DOM.outerLabel = document.getElementById('outerLabel');
+				DOM.innerResult = document.getElementById('innerResult');
+				DOM.outerResult = document.getElementById('outerResult');
+				DOM.innerUnit = document.getElementById('innerUnit');
+				DOM.outerUnit = document.getElementById('outerUnit');
+				DOM.applyWidthBtn = document.getElementById('applyWidthBtn');
+				DOM.modeButtons = document.querySelectorAll('.mode-switch button');
+				DOM.unitButtons = document.querySelectorAll('.unit-switch button');
 			}
 
-			function switchUnit(unit) {
-				currentUnit = unit;
-				// 更新按钮状态
-				document.querySelectorAll('.unit-switch button').forEach((btn) => {
-					btn.classList.toggle('active', btn.dataset.unit === unit);
-				});
+			// PCB 线宽选择事件监听
+			function addTrackSelectionListener() {
+				eda.pcb_Event.addMouseEventListener(
+					TRACK_EVENT_ID,
+					'selected',
+					async (eventType) => {
+						const selectedPrimitives = await eda.pcb_SelectControl.getSelectedPrimitives();
+						if (selectedPrimitives.length === 1) {
+							const track = selectedPrimitives[0];
+							console.log(track);
 
-				// 如果是反向计算模式，更新输入标签的单位
-				if (currentMode === 'current') {
-					document.getElementById('currentLabel').textContent = `线宽 (${unit})`;
-				}
-
-				// 重新计算并显示结果
-				calculateTraceWidth();
-			}
-
-			function calculateTraceWidth() {
-				// 获取用户输入
-				var inputValue = parseFloat(document.getElementById('current').value) || 0;
-				var tempRise = parseFloat(document.getElementById('tempRise').value) || 0;
-				var copperThickness = parseFloat(document.getElementById('copperThickness').value) || 0;
-
-				// 如果所有输入都有值才进行计算
-				if (inputValue && tempRise && copperThickness) {
-					var kInner = 0.024;
-					var kOuter = 0.048;
-					var b = 0.44;
-					var c = 0.725;
-
-					if (currentMode === 'width') {
-						// 正向计算：电流 -> 线宽
-						var widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * 1.378);
-						var widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * 1.378);
-
-						// 根据当前单位转换
-						if (currentUnit === 'mm') {
-							document.getElementById('resultInner').textContent = (widthInnerMils * MIL_TO_MM).toFixed(3);
-							document.getElementById('resultOuter').textContent = (widthOuterMils * MIL_TO_MM).toFixed(3);
-							document.getElementById('resultInnerUnit').textContent = 'mm';
-							document.getElementById('resultOuterUnit').textContent = 'mm';
-						} else {
-							document.getElementById('resultInner').textContent = widthInnerMils.toFixed(2);
-							document.getElementById('resultOuter').textContent = widthOuterMils.toFixed(2);
-							document.getElementById('resultInnerUnit').textContent = 'mils';
-							document.getElementById('resultOuterUnit').textContent = 'mils';
+							if (track['pcbItemPrimitiveType'] === 'Track') {
+								const widthInMils = track['width'] * 10;
+								const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
+								DOM.trackInput.value = displayValue;
+								calculateTrace();
+							}
 						}
+					},
+					0,
+				);
+			}
+
+			function removeTrackSelectionListener() {
+				eda.pcb_Event.removeEventListener(TRACK_EVENT_ID);
+			}
+
+			function switchCalculationMode(mode) {
+				calculationMode = mode;
+				updateModeButtons();
+				updateLabels();
+				clearInputsAndResults();
+
+				if (mode === 'width') {
+					removeTrackSelectionListener();
+				} else {
+					addTrackSelectionListener();
+				}
+			}
+
+			function switchDisplayUnit(unit) {
+				displayUnit = unit;
+				updateLabels();
+				updateUnitButtons();
+				updateInputLabel();
+				calculateTrace();
+			}
+
+			function updateModeButtons() {
+				DOM.modeButtons.forEach((btn) => {
+					btn.classList.toggle('active', btn.dataset.mode === calculationMode);
+				});
+			}
+
+			function updateUnitButtons() {
+				DOM.unitButtons.forEach((btn) => {
+					btn.classList.toggle('active', btn.dataset.unit === displayUnit);
+				});
+			}
+
+			function updateLabels() {
+				if (calculationMode === 'width') {
+					DOM.trackLabel.textContent = '电流 (A)';
+					DOM.innerLabel.textContent = '内层印制线宽度:';
+					DOM.outerLabel.textContent = '外层印制线宽度:';
+					DOM.innerUnit.textContent = displayUnit;
+					DOM.outerUnit.textContent = displayUnit;
+					DOM.applyWidthBtn.classList.remove('hidden');
+				} else {
+					DOM.trackLabel.textContent = `线宽 (${displayUnit})`;
+					DOM.innerLabel.textContent = '内层最大电流:';
+					DOM.outerLabel.textContent = '外层最大电流:';
+					DOM.innerUnit.textContent = 'A';
+					DOM.outerUnit.textContent = 'A';
+					DOM.applyWidthBtn.classList.add('hidden');
+				}
+			}
+
+			function updateInputLabel() {
+				if (calculationMode === 'current') {
+					DOM.trackLabel.textContent = `线宽 (${displayUnit})`;
+				}
+			}
+
+			function clearInputsAndResults() {
+				DOM.trackInput.value = '';
+				DOM.innerResult.textContent = '-';
+				DOM.outerResult.textContent = '-';
+			}
+
+			// 修改应用宽度的函数
+			function applyTrackWidth(innerWidth, outerWidth) {
+				console.log('应用内层线宽:', innerWidth);
+				console.log('应用外层线宽:', outerWidth);
+				// eda.pcb_Event.addMouseEventListener(
+				// 	TRACK_EVENT_ID,
+				// 	'selected',
+				// 	async (eventType) => {
+				// 		const selectedPrimitives = await eda.pcb_SelectControl.getSelectedPrimitives();
+				// 		if (selectedPrimitives.length === 1) {
+				// 			const track = selectedPrimitives[0];
+				// 			if (track['pcbItemPrimitiveType'] === 'Track') {
+				// 				const widthInMils = track['width'] * 10;
+				// 				const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
+				// 				DOM.trackInput.value = displayValue;
+				// 				calculateTrace();
+				// 			}
+				// 		}
+				// 	},
+				// 	1,
+				// );
+			}
+
+			function calculateTrace() {
+				const inputValue = parseFloat(DOM.trackInput.value) || 0;
+				const tempRise = parseFloat(DOM.tempRise.value) || 0;
+				const copperThickness = parseFloat(DOM.copperThickness.value) || 0;
+
+				if (inputValue && tempRise && copperThickness) {
+					const { kInner, kOuter, b, c, copperFactor } = CALC_PARAMS;
+
+					if (calculationMode === 'width') {
+						const widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
+						const widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
+
+						if (displayUnit === 'mm') {
+							DOM.innerResult.textContent = (widthInnerMils * UNIT_MIL_TO_MM).toFixed(3);
+							DOM.outerResult.textContent = (widthOuterMils * UNIT_MIL_TO_MM).toFixed(3);
+						} else {
+							DOM.innerResult.textContent = widthInnerMils.toFixed(2);
+							DOM.outerResult.textContent = widthOuterMils.toFixed(2);
+						}
+
+						const widthToApply = displayUnit === 'mm' ? widthOuterMils * UNIT_MIL_TO_MM : widthOuterMils;
+						DOM.applyWidthBtn.dataset.width = widthToApply;
+
+						// 更新按钮的点击事件
+						DOM.applyWidthBtn.onclick = function () {
+							applyTrackWidth(widthInnerMils, widthOuterMils);
+						};
 					} else {
-						// 反向计算：线宽 -> 电流
-						// 如果当前单位是mm，需要先转换为mils
-						var widthInMils = currentUnit === 'mm' ? inputValue / MIL_TO_MM : inputValue;
+						const widthInMils = displayUnit === 'mm' ? inputValue / UNIT_MIL_TO_MM : inputValue;
 
-						var currentInner = kInner * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * 1.378, c);
-						var currentOuter = kOuter * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * 1.378, c);
+						const currentInner = kInner * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * copperFactor, c);
+						const currentOuter = kOuter * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * copperFactor, c);
 
-						document.getElementById('resultInner').textContent = currentInner.toFixed(2);
-						document.getElementById('resultOuter').textContent = currentOuter.toFixed(2);
-						document.getElementById('resultInnerUnit').textContent = 'A';
-						document.getElementById('resultOuterUnit').textContent = 'A';
+						DOM.innerResult.textContent = currentInner.toFixed(2);
+						DOM.outerResult.textContent = currentOuter.toFixed(2);
 					}
 				} else {
-					document.getElementById('resultInner').textContent = '-';
-					document.getElementById('resultOuter').textContent = '-';
+					DOM.innerResult.textContent = '-';
+					DOM.outerResult.textContent = '-';
 				}
 			}
 
-			// 页面加载完成后添加事件监听
+			// 初始化
 			document.addEventListener('DOMContentLoaded', function () {
-				const inputs = ['current', 'tempRise', 'copperThickness'];
-				inputs.forEach((id) => {
-					document.getElementById(id).addEventListener('input', calculateTraceWidth);
+				initializeDOMReferences(); // 初始化 DOM 元素引用
+
+				// 注册输入事件
+				['trackInput', 'tempRise', 'copperThickness'].forEach((id) => {
+					DOM[id].addEventListener('input', calculateTrace);
 				});
+
+				// 注册按钮事件
+				DOM.modeButtons.forEach((btn) => {
+					btn.addEventListener('click', () => switchCalculationMode(btn.dataset.mode));
+				});
+
+				DOM.unitButtons.forEach((btn) => {
+					btn.addEventListener('click', () => switchDisplayUnit(btn.dataset.unit));
+				});
+
+				// 注册表单提交事件
+				const form = document.querySelector('form');
+				form.addEventListener('submit', (event) => {
+					event.preventDefault();
+					calculateTrace();
+				});
+			});
+
+			// 页面卸载时清理
+			window.addEventListener('beforeunload', function () {
+				if (calculationMode === 'current') {
+					removeTrackSelectionListener();
+				}
 			});
 		</script>
 	</head>
@@ -417,18 +571,18 @@
 			<h1>PCB 印制线宽度计算器</h1>
 			<div class="calculator-container">
 				<div class="unit-switch">
-					<button class="active" data-unit="mils" onclick="switchUnit('mils')">mils</button>
-					<button data-unit="mm" onclick="switchUnit('mm')">mm</button>
+					<button class="active" data-unit="mils">mils</button>
+					<button data-unit="mm">mm</button>
 				</div>
 				<div class="mode-switch">
-					<button class="active" data-mode="width" onclick="switchMode('width')">正向计算</button>
-					<button data-mode="current" onclick="switchMode('current')">反向计算</button>
+					<button class="active" data-mode="width">正向计算</button>
+					<button data-mode="current">反向计算</button>
 				</div>
 				<div class="input-section">
-					<form onsubmit="event.preventDefault(); calculateTraceWidth();">
+					<form>
 						<div class="input-group">
-							<label id="currentLabel" for="current">电流 (A)</label>
-							<input type="number" id="current" name="current" required step="0.1" min="0" />
+							<label id="trackLabel" for="trackInput">电流 (A)</label>
+							<input type="number" id="trackInput" name="trackInput" required step="0.1" min="0" />
 						</div>
 
 						<div class="input-group">
@@ -447,19 +601,20 @@
 				<div class="results-section">
 					<div class="results">
 						<div class="result-item">
-							<span id="resultInnerLabel">内层印制线宽度:</span>
+							<span id="innerLabel">内层印制线宽度:</span>
 							<span class="result-value">
-								<span id="resultInner">-</span>
-								<span id="resultInnerUnit">mils</span>
+								<span id="innerResult">-</span>
+								<span id="innerUnit">mils</span>
 							</span>
 						</div>
 						<div class="result-item">
-							<span id="resultOuterLabel">外层印制线宽度:</span>
+							<span id="outerLabel">外层印制线宽度:</span>
 							<span class="result-value">
-								<span id="resultOuter">-</span>
-								<span id="resultOuterUnit">mils</span>
+								<span id="outerResult">-</span>
+								<span id="outerUnit">mils</span>
 							</span>
 						</div>
+						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽</button>
 					</div>
 				</div>
 
