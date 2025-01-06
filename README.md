@@ -1,8 +1,4 @@
-# LCEDA_Assisted_Computing_Plugin
-
-嘉立创EDA 辅助计算插件
-
-## ![](https://socialify.git.ci/xiaowine/LCEDA_Assisted_Computing_Plugin/image?description=1&descriptionEditable=%e5%98%89%e7%ab%8b%e5%88%9bEDA+%e8%be%85%e5%8a%a9%e8%ae%a1%e7%ae%97%e6%8f%92%e4%bb%b6&language=1&name=1&owner=1&theme=Auto)
+## ![](https://socialify.git.ci/xiaowine/easyeda-pro-pcb-calculation-tools/image?description=1&descriptionEditable=%e5%98%89%e7%ab%8b%e5%88%9bEDA+PCB+%e8%be%85%e5%8a%a9%e8%ae%a1%e7%ae%97%e6%8f%92%e4%bb%b6&language=1&name=1&owner=1&theme=Auto)
 
 ---
 
