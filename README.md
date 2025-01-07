@@ -20,7 +20,7 @@
 
 ## 怎么使用
 
-- 先前往[Releases](https://github.com/xiaowine/easyeda-pro-pcb-calculation-tools/releases)下载最近的插件，下载后解压，会有一个后缀为`.eext`的文件，这就是EDA的插件文件
+- 先前往[Releases](https://github.com/xiaowine/easyeda-pro-pcb-calculation-tools/releases)下载最新的文件，下载后如果是`zip`请解压，后缀为`.eext`的文件才是EDA的插件文件
 - 想尝鲜的用户可以前往[Action](https://github.com/xiaowine/easyeda-pro-pcb-calculation-tools/actions)下载测试版本
 - 下载好后，前往`EDA专业版`，点击顶栏`设置`---`扩展`---`扩展管理器`---`导入扩展`，选择插件文件并加载
 - 当顶栏出现`辅助计算`选项，则安装完成
