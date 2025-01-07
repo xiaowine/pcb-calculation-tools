@@ -3,7 +3,7 @@
 	"uuid": "42e308c13d86407cac8704f9daca4d0f",
 	"displayName": "辅助计算",
 	"description": "",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"publisher": "xiao_wine <xiaowine0#gmail.com>",
 	"engines": {
 		"eda": "^2.2.32"
