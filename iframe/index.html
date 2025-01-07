@@ -323,7 +323,7 @@
 			}
 
 			/* 修改可见性类，用于反向计算时隐藏按钮 */
-			.apply-width-btn.hidden {
+			.hidden {
 				display: none;
 			}
 		</style>
@@ -341,6 +341,7 @@
 				innerUnit: null,
 				outerUnit: null,
 				applyWidthBtn: null,
+				currentTips: null,
 				modeButtons: null,
 				unitButtons: null,
 			};
@@ -373,6 +374,7 @@
 				DOM.innerUnit = document.getElementById('innerUnit');
 				DOM.outerUnit = document.getElementById('outerUnit');
 				DOM.applyWidthBtn = document.getElementById('applyWidthBtn');
+				DOM.currentTips = document.getElementById('current-tips');
 				DOM.modeButtons = document.querySelectorAll('.mode-switch button');
 				DOM.unitButtons = document.querySelectorAll('.unit-switch button');
 			}
@@ -438,6 +440,8 @@
 			}
 
 			function updateLabels() {
+				console.log('aaaaaaaaaaaaaaaaa');
+
 				if (calculationMode === 'width') {
 					DOM.trackLabel.textContent = '电流 (A)';
 					DOM.innerLabel.textContent = '内层印制线宽度:';
@@ -445,6 +449,7 @@
 					DOM.innerUnit.textContent = displayUnit;
 					DOM.outerUnit.textContent = displayUnit;
 					DOM.applyWidthBtn.classList.remove('hidden');
+					DOM.currentTips.classList.add('hidden');
 				} else {
 					DOM.trackLabel.textContent = `线宽 (${displayUnit})`;
 					DOM.innerLabel.textContent = '内层最大电流:';
@@ -452,6 +457,7 @@
 					DOM.innerUnit.textContent = 'A';
 					DOM.outerUnit.textContent = 'A';
 					DOM.applyWidthBtn.classList.add('hidden');
+					DOM.currentTips.classList.remove('hidden');
 				}
 			}
 
@@ -471,23 +477,31 @@
 			function applyTrackWidth(innerWidth, outerWidth) {
 				console.log('应用内层线宽:', innerWidth);
 				console.log('应用外层线宽:', outerWidth);
-				// eda.pcb_Event.addMouseEventListener(
-				// 	TRACK_EVENT_ID,
-				// 	'selected',
-				// 	async (eventType) => {
-				// 		const selectedPrimitives = await eda.pcb_SelectControl.getSelectedPrimitives();
-				// 		if (selectedPrimitives.length === 1) {
-				// 			const track = selectedPrimitives[0];
-				// 			if (track['pcbItemPrimitiveType'] === 'Track') {
-				// 				const widthInMils = track['width'] * 10;
-				// 				const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
-				// 				DOM.trackInput.value = displayValue;
-				// 				calculateTrace();
-				// 			}
-				// 		}
-				// 	},
-				// 	1,
-				// );
+				eda.pcb_Event.addMouseEventListener(
+					TRACK_EVENT_ID,
+					'selected',
+					async (eventType) => {
+						const selectedPrimitives = await eda.pcb_SelectControl.getSelectedPrimitives();
+						if (selectedPrimitives.length === 1) {
+							const track = selectedPrimitives[0];
+							console.log(track);
+							console.log(track.getState_Layer());
+							if (track['pcbItemPrimitiveType'] === 'Track') {
+								const layerId = track['layerId'];
+								if (layerId == 2 || layerId == 1) {
+									console.log('外层');
+								} else if (layerId >= 15 && layerId <= 46) {
+									console.log('内层');
+								}
+								// const widthInMils = track['width'] * 10;
+								// const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
+								// DOM.trackInput.value = displayValue;
+								// calculateTrace();
+							}
+						}
+					},
+					1,
+				);
 			}
 
 			function calculateTrace() {
@@ -535,6 +549,7 @@
 			// 初始化
 			document.addEventListener('DOMContentLoaded', function () {
 				initializeDOMReferences(); // 初始化 DOM 元素引用
+				updateLabels();
 
 				// 注册输入事件
 				['trackInput', 'tempRise', 'copperThickness'].forEach((id) => {
@@ -614,7 +629,8 @@
 								<span id="outerUnit">mils</span>
 							</span>
 						</div>
-						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽</button>
+						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽(等待填坑)</button>
+						<span id="current-tips" class="input-hint">点击PCB导线可直接导入线宽</span>
 					</div>
 				</div>
 
