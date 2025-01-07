@@ -140,6 +140,8 @@
 			.result-value {
 				font-weight: bold;
 				color: var(--primary-color);
+				display: flex;
+				gap: 0.5rem;
 			}
 
 			@media (max-width: 768px) {
@@ -180,6 +182,7 @@
 
 			input[type='number'] {
 				-moz-appearance: textfield; /* Firefox */
+				appearance: textfield; /* Standard */
 			}
 
 			.parameters-note {
@@ -338,12 +341,12 @@
 				outerLabel: null,
 				innerResult: null,
 				outerResult: null,
-				innerUnit: null,
 				outerUnit: null,
 				applyWidthBtn: null,
 				currentTips: null,
 				modeButtons: null,
 				unitButtons: null,
+				unitSwitch: null,
 			};
 
 			// 常量定义
@@ -371,12 +374,12 @@
 				DOM.outerLabel = document.getElementById('outerLabel');
 				DOM.innerResult = document.getElementById('innerResult');
 				DOM.outerResult = document.getElementById('outerResult');
-				DOM.innerUnit = document.getElementById('innerUnit');
 				DOM.outerUnit = document.getElementById('outerUnit');
 				DOM.applyWidthBtn = document.getElementById('applyWidthBtn');
 				DOM.currentTips = document.getElementById('current-tips');
 				DOM.modeButtons = document.querySelectorAll('.mode-switch button');
 				DOM.unitButtons = document.querySelectorAll('.unit-switch button');
+				DOM.unitSwitch = document.getElementById('unitSwitch');
 			}
 
 			// PCB 线宽选择事件监听
@@ -444,18 +447,16 @@
 					DOM.trackLabel.textContent = '电流 (A)';
 					DOM.innerLabel.textContent = '内层印制线宽度:';
 					DOM.outerLabel.textContent = '外层印制线宽度:';
-					DOM.innerUnit.textContent = displayUnit;
-					DOM.outerUnit.textContent = displayUnit;
 					DOM.applyWidthBtn.classList.remove('hidden');
 					DOM.currentTips.classList.add('hidden');
+					DOM.unitSwitch.style.display = 'none';
 				} else {
 					DOM.trackLabel.textContent = `线宽 (${displayUnit})`;
 					DOM.innerLabel.textContent = '内层最大电流:';
 					DOM.outerLabel.textContent = '外层最大电流:';
-					DOM.innerUnit.textContent = 'A';
-					DOM.outerUnit.textContent = 'A';
 					DOM.applyWidthBtn.classList.add('hidden');
 					DOM.currentTips.classList.remove('hidden');
+					DOM.unitSwitch.style.display = 'flex';
 				}
 			}
 
@@ -514,13 +515,8 @@
 						const widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
 						const widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
 
-						if (displayUnit === 'mm') {
-							DOM.innerResult.textContent = (widthInnerMils * UNIT_MIL_TO_MM).toFixed(3);
-							DOM.outerResult.textContent = (widthOuterMils * UNIT_MIL_TO_MM).toFixed(3);
-						} else {
-							DOM.innerResult.textContent = widthInnerMils.toFixed(2);
-							DOM.outerResult.textContent = widthOuterMils.toFixed(2);
-						}
+						DOM.innerResult.innerHTML = `${widthInnerMils.toFixed(2)} mils / ${(widthInnerMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
+						DOM.outerResult.innerHTML = `${widthOuterMils.toFixed(2)} mils / ${(widthOuterMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
 
 						const widthToApply = displayUnit === 'mm' ? widthOuterMils * UNIT_MIL_TO_MM : widthOuterMils;
 						DOM.applyWidthBtn.dataset.width = widthToApply;
@@ -535,8 +531,8 @@
 						const currentInner = kInner * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * copperFactor, c);
 						const currentOuter = kOuter * Math.pow(tempRise, b) * Math.pow(widthInMils * copperThickness * copperFactor, c);
 
-						DOM.innerResult.textContent = currentInner.toFixed(2);
-						DOM.outerResult.textContent = currentOuter.toFixed(2);
+						DOM.innerResult.textContent = `${currentInner.toFixed(2)} A`;
+						DOM.outerResult.textContent = `${currentOuter.toFixed(2)} A`;
 					}
 				} else {
 					DOM.innerResult.textContent = '-';
@@ -583,7 +579,7 @@
 		<div class="calculator-card">
 			<h1>PCB 印制线宽度计算器</h1>
 			<div class="calculator-container">
-				<div class="unit-switch">
+				<div class="unit-switch" id="unitSwitch">
 					<button class="active" data-unit="mils">mils</button>
 					<button data-unit="mm">mm</button>
 				</div>
@@ -617,14 +613,12 @@
 							<span id="innerLabel">内层印制线宽度:</span>
 							<span class="result-value">
 								<span id="innerResult">-</span>
-								<span id="innerUnit">mils</span>
 							</span>
 						</div>
 						<div class="result-item">
 							<span id="outerLabel">外层印制线宽度:</span>
 							<span class="result-value">
 								<span id="outerResult">-</span>
-								<span id="outerUnit">mils</span>
 							</span>
 						</div>
 						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽(等待填坑)</button>
