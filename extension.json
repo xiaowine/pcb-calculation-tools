@@ -1,14 +1,14 @@
 {
-	"name": "easyeda-pro-pcb-calculation-tools",
+	"name": "pcb-calculation-tools",
 	"uuid": "42e308c13d86407cac8704f9daca4d0f",
-	"displayName": "辅助计算",
-	"description": "",
+	"displayName": "PCB计算工具",
+	"description": "一个支持线宽计算，电阻分压计算等PCB电路板数值计算的工具",
 	"version": "1.2.0",
 	"publisher": "xiao_wine <xiaowine0#gmail.com>",
 	"engines": {
 		"eda": "^2.2.32"
 	},
-	"license": "MIT License",
+	"license": "Apache License",
 	"repository": {
 		"type": "extension-store",
 		"url": ""
@@ -27,7 +27,7 @@
 		"home": [
 			{
 				"id": "home_calculation_tools",
-				"title": "辅助计算",
+				"title": "计算",
 				"menuItems": [
 					{
 						"id": "about",
@@ -40,7 +40,7 @@
 		"sch": [
 			{
 				"id": "home_calculation_tools",
-				"title": "辅助计算",
+				"title": "计算",
 				"menuItems": [
 					{
 						"id": "about",
@@ -53,21 +53,21 @@
 		"pcb": [
 			{
 				"id": "pcb_calculation_tools",
-				"title": "辅助计算",
+				"title": "计算",
 				"menuItems": [
 					{
 						"id": "line_width_calculation",
-						"title": "线宽计算",
+						"title": "线宽计算...",
 						"registerFn": "line_width_calculation"
 					},
 					{
 						"id": "resistive_divider_calculation",
-						"title": "分压电阻计算",
+						"title": "分压电阻计算...",
 						"registerFn": "resistive_divider_calculation"
 					},
 					{
 						"id": "about",
-						"title": "关于",
+						"title": "关于...",
 						"registerFn": "about"
 					}
 				]
