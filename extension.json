@@ -1,9 +1,9 @@
 {
-	"name": "auxiliary-calculations",
+	"name": "easyeda-pro-pcb-calculation-tools",
 	"uuid": "42e308c13d86407cac8704f9daca4d0f",
 	"displayName": "辅助计算",
 	"description": "",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"publisher": "xiao_wine <xiaowine0#gmail.com>",
 	"engines": {
 		"eda": "^2.2.32"
@@ -26,12 +26,25 @@
 	"headerMenus": {
 		"home": [
 			{
-				"id": "home_auxiliary_calculations",
+				"id": "home_calculation_tools",
 				"title": "辅助计算",
 				"menuItems": [
 					{
 						"id": "about",
-						"title": "About",
+						"title": "关于",
+						"registerFn": "about"
+					}
+				]
+			}
+		],
+		"sch": [
+			{
+				"id": "home_calculation_tools",
+				"title": "辅助计算",
+				"menuItems": [
+					{
+						"id": "about",
+						"title": "关于",
 						"registerFn": "about"
 					}
 				]
@@ -39,17 +52,17 @@
 		],
 		"pcb": [
 			{
-				"id": "pcb_auxiliary_calculations",
+				"id": "pcb_calculation_tools",
 				"title": "辅助计算",
 				"menuItems": [
 					{
 						"id": "line_width_calculation",
-						"title": "LineWidthCalculation",
+						"title": "线宽计算",
 						"registerFn": "line_width_calculation"
 					},
 					{
 						"id": "about",
-						"title": "About",
+						"title": "关于",
 						"registerFn": "about"
 					}
 				]
