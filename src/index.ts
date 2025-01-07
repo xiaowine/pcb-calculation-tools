@@ -22,5 +22,8 @@ export function about(): void {
 	);
 }
 export function line_width_calculation(): void {
-	eda.sys_IFrame.openIFrame('/iframe/index.html', 1000, 550);
+	eda.sys_IFrame.openIFrame('/iframe/line-width.html', 1000, 550);
+}
+export function resistive_divider_calculation(): void {
+	eda.sys_IFrame.openIFrame('/iframe/resistive-divider.html', 1000, 720);
 }

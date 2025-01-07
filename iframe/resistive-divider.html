@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>电压分压计算器</title>
+		<style>
+			:root {
+				--primary-color: #2196f3;
+				--hover-color: #1976d2;
+				--background-color: #f5f5f5;
+				--card-background: #ffffff;
+				--text-color: #333;
+				--text-secondary: #666;
+				--text-tertiary: #888;
+				--border-color: #eee;
+				--input-border: #ddd;
+				--shadow-color: rgba(0, 0, 0, 0.1);
+				--button-text: #fff;
+				scrollbar-width: none; /* Firefox */
+				-ms-overflow-style: none; /* IE and Edge */
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--primary-color: #2196f3;
+					--hover-color: #1976d2;
+					--background-color: #1a1a1a;
+					--card-background: #242424;
+					--text-color: #e1e1e1;
+					--text-secondary: #a1a1a1;
+					--text-tertiary: #808080;
+					--border-color: #383838;
+					--input-border: #383838;
+					--shadow-color: rgba(0, 0, 0, 0.3);
+					--button-text: #fff;
+				}
+
+				input[type='number'],
+				input[type='text'] {
+					background-color: var(--card-background) !important;
+					color: var(--text-color);
+				}
+
+				/* 其他深色模式的样式 */
+				body {
+					color: var(--text-color);
+					background-color: var(--background-color);
+				}
+			}
+
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+				max-width: 1000px;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				background-color: var(--background-color);
+				color: var(--text-color);
+				line-height: 1.6;
+			}
+
+			.container {
+				display: flex;
+				background-color: var(--card-background);
+				padding: 30px;
+				box-shadow: 0 4px 8px var(--shadow-color);
+				border-radius: 10px;
+			}
+
+			.left-section {
+				width: 48%;
+				padding-right: 50px;
+			}
+
+			.right-section {
+				width: 48%;
+				padding-left: 20px;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+			}
+
+			h1 {
+				font-size: 28px;
+				margin-bottom: 30px;
+				color: var(--text-color);
+				text-align: center;
+			}
+
+			label {
+				font-size: 16px;
+				color: var(--text-secondary);
+				margin-bottom: 10px;
+				display: block;
+			}
+
+			input[type='number'],
+			input[type='text'] {
+				width: 100%;
+				padding: 12px;
+				font-size: 18px;
+				margin-bottom: 20px;
+				border: 2px solid var(--input-border);
+				border-radius: 6px;
+				background-color: #fafafa;
+				color: var(--text-color);
+			}
+
+			/* 新增的样式：将两个辅助输入放到同一行 */
+			.input-row {
+				display: flex;
+				gap: 20px; /* 设置输入框之间的间距 */
+				margin-bottom: 20px; /* 设置底部间距 */
+			}
+
+			.input-row input {
+				width: 48%; /* 每个输入框占一半宽度 */
+			}
+
+			button {
+				padding: 12px 24px;
+				background-color: var(--primary-color);
+				color: var(--button-text);
+				border: none;
+				border-radius: 6px;
+				font-size: 18px;
+				cursor: pointer;
+				width: 100%;
+				transition: background-color 0.3s;
+			}
+
+			button:hover {
+				background-color: var(--hover-color);
+			}
+
+			.results {
+				margin-top: 80px;
+				padding: 20px;
+				background-color: var(--background-color);
+				border-radius: 6px;
+				box-shadow: inset 0 0 5px var(--shadow-color);
+				font-size: 16px;
+				color: var(--text-color);
+				height: 450px;
+				overflow-y: auto;
+			}
+
+			.result-item {
+				margin-bottom: 12px;
+				padding: 8px;
+				background-color: var(--card-background);
+				border-radius: 4px;
+				box-shadow: 0 1px 3px var(--shadow-color);
+			}
+
+			/* 美化滚动条 */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+
+			::-webkit-scrollbar-thumb {
+				background-color: var(--primary-color);
+				border-radius: 4px;
+			}
+
+			::-webkit-scrollbar-track {
+				background-color: var(--background-color);
+				border-radius: 4px;
+			}
+
+			::-webkit-scrollbar-thumb:hover {
+				background-color: var(--hover-color);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="left-section">
+				<h1>电压分压计算器</h1>
+				<label for="Vin">输入电压 (Vin):</label>
+				<input type="number" id="Vin" value="10" step="0.1" />
+
+				<label for="Vout">目标输出电压 (Vout):</label>
+				<input type="number" id="Vout" value="5" step="0.1" />
+
+				<label for="offsetPercentage">允许误差 (%):</label>
+				<input type="number" id="offsetPercentage" value="1" step="0.1" />
+
+				<!-- 新增的输入行 -->
+				<div class="input-row">
+					<div>
+						<label for="minResistor">最小电阻值 (Ω):</label>
+						<input type="text" id="minResistor" value="1k" />
+					</div>
+					<div>
+						<label for="maxResistor">最大电阻值 (Ω):</label>
+						<input type="text" id="maxResistor" value="1M" />
+					</div>
+				</div>
+
+				<button id="calculateButton">计算电阻组合</button>
+			</div>
+			<div class="right-section">
+				<div class="results" id="results"></div>
+			</div>
+		</div>
+
+		<script>
+			const E96 = [
+				100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127, 130, 133, 137, 140, 143, 147, 150, 154, 158, 162, 165, 169, 174, 178, 182, 187,
+				191, 196, 200, 205, 210, 215, 221, 226, 232, 237, 243, 249, 255, 261, 267, 274, 280, 287, 294, 301, 309, 316, 324, 332, 340, 348, 357,
+				365, 374, 383, 392, 402, 412, 422, 432, 442, 453, 464, 475, 487, 499, 511, 523, 536, 549, 562, 576, 590, 604, 619, 634, 649, 665, 681,
+				698, 715, 732, 750, 768, 787, 806, 825, 845, 866, 887, 909, 931, 953, 976,
+			];
+
+			const E96_extended = E96.flatMap((value) => {
+				return Array.from({ length: 6 }, (_, i) => value * Math.pow(10, i));
+			});
+
+			// 辅助函数：解析带单位的电阻值
+			function parseResistorValue(value) {
+				const regex = /^(\d*\.?\d+)(k|M)?$/i; // 匹配数字后跟 k 或 M（单位可不区分大小写）
+				const match = value.trim().toLowerCase().match(regex);
+				if (!match) return null; // 如果没有匹配到，返回 null
+
+				let resistorValue = parseFloat(match[1]);
+				const unit = match[2];
+
+				if (unit === 'k') resistorValue *= 1000; // k代表千欧
+				if (unit === 'm') resistorValue *= 1000000; // M代表兆欧
+
+				return resistorValue;
+			}
+			function calculateVoltageDivider(R1, R2, Vin) {
+				return (Vin * R2) / (R1 + R2);
+			}
+
+			function findResistorCombinations(Vin, Vout, offsetPercentage, minResistor, maxResistor) {
+				const bound = (Vout * offsetPercentage) / 100;
+
+				let combinations = [];
+				console.log(bound);
+
+				E96_extended.forEach((R1) => {
+					if (R1 < minResistor || R1 > maxResistor) return;
+					E96_extended.forEach((R2) => {
+						if (R2 < minResistor || R2 > maxResistor) return;
+
+						const VoutCalculated = calculateVoltageDivider(R1, R2, Vin);
+						if (Math.abs(VoutCalculated - Vout) <= bound) {
+							combinations.push({
+								R1,
+								R2,
+								VoutCalculated: VoutCalculated.toFixed(2),
+							});
+						}
+					});
+				});
+
+				return combinations;
+			}
+
+			function updateResults(combinations) {
+				const resultsDiv = document.getElementById('results');
+				resultsDiv.innerHTML = ''; // Clear previous results
+
+				if (combinations.length === 0) {
+					resultsDiv.innerHTML = '<p>未找到符合条件的电阻组合。</p>';
+					return;
+				}
+
+				combinations.forEach((combo) => {
+					const resultDiv = document.createElement('div');
+					resultDiv.classList.add('result-item');
+					resultDiv.innerHTML = `
+			             <strong>R1: ${formatResistorValue(combo.R1)}</strong> & R2: ${formatResistorValue(combo.R2)}
+			             <br />
+			             <em>计算输出电压: ${combo.VoutCalculated}V</em>
+			         `;
+					resultsDiv.appendChild(resultDiv);
+				});
+			}
+
+			document.getElementById('calculateButton').addEventListener('click', () => {
+				const Vin = document.getElementById('Vin').value;
+				const Vout = document.getElementById('Vout').value;
+				const offsetPercentage = document.getElementById('offsetPercentage').value;
+
+				const minResistorValue = parseResistorValue(document.getElementById('minResistor').value);
+				const maxResistorValue = parseResistorValue(document.getElementById('maxResistor').value);
+
+				if (minResistorValue && maxResistorValue) {
+					const combinations = findResistorCombinations(Vin, Vout, offsetPercentage, minResistorValue, maxResistorValue);
+					updateResults(combinations);
+				} else {
+					alert('请输入有效的电阻值（带单位 k 或 M）');
+				}
+			});
+			// 辅助函数：格式化电阻值
+			function formatResistorValue(value) {
+				if (value >= 1e6) {
+					return (value / 1e6).toFixed(2) + ' MΩ'; // 兆欧
+				} else if (value >= 1e3) {
+					return (value / 1e3).toFixed(2) + ' kΩ'; // 千欧
+				} else {
+					return value.toFixed(2) + ' Ω'; // 欧姆
+				}
+			}
+		</script>
+	</body>
+</html>

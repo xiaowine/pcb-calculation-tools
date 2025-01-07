@@ -61,6 +61,11 @@
 						"registerFn": "line_width_calculation"
 					},
 					{
+						"id": "resistive_divider_calculation",
+						"title": "分压电阻计算",
+						"registerFn": "resistive_divider_calculation"
+					},
+					{
 						"id": "about",
 						"title": "关于",
 						"registerFn": "about"
