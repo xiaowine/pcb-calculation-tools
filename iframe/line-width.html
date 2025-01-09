@@ -482,13 +482,15 @@
 						if (selectedPrimitives.length === 1) {
 							const track = selectedPrimitives[0];
 							console.log(track);
-							console.log(track.getState_Layer());
 							if (track['pcbItemPrimitiveType'] === 'Track') {
 								const layerId = track['layerId'];
-								if (layerId == 2 || layerId == 1) {
-									console.log('外层');
+								const globalIndex = track['globalIndex'];
+								if (layerId >= 1 && layerId <= 2) {
+									console.log(outerWidth * 10);
+									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: outerWidth * 10 });
 								} else if (layerId >= 15 && layerId <= 46) {
-									console.log('内层');
+									console.log(innerWidth * 10);
+									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: innerWidth * 10 });
 								}
 								// const widthInMils = track['width'] * 10;
 								// const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
