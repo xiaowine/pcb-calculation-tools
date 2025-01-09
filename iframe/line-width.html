@@ -565,6 +565,7 @@
 					event.preventDefault();
 					calculateTrace();
 				});
+				calculateTrace();
 			});
 
 			// 页面卸载时清理
@@ -591,18 +592,19 @@
 					<form>
 						<div class="input-group">
 							<label id="trackLabel" for="trackInput">电流 (A)</label>
-							<input type="number" id="trackInput" name="trackInput" required step="0.1" min="0" />
+							<input type="number" id="trackInput" name="trackInput" required step="0.1" min="0" value="1" />
 						</div>
 
 						<div class="input-group">
 							<label for="tempRise">温升 (°C)</label>
-							<input type="number" id="tempRise" name="tempRise" required step="0.1" min="0" />
+							<input type="number" id="tempRise" name="tempRise" required step="0.1" min="0" value="30" />
 						</div>
 
 						<div class="input-group">
 							<label for="copperThickness">铜箔厚度 (oz)</label>
-							<input type="number" id="copperThickness" name="copperThickness" required step="0.1" min="0" />
+							<input type="number" id="copperThickness" name="copperThickness" required step="0.1" min="0" value="1" />
 							<div class="input-hint">嘉立创免费打印的外层铜箔厚度为1oz，内层0.5oz</div>
+							<div class="input-hint">此求得的结果是估算值，依据 IPC-2221 标准下计算,实际结果会随应用条件而发生变化</div>
 						</div>
 					</form>
 				</div>
@@ -621,7 +623,7 @@
 								<span id="outerResult">-</span>
 							</span>
 						</div>
-						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽(等待填坑)</button>
+						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽</button>
 						<span id="current-tips" class="input-hint">点击PCB导线可直接导入线宽</span>
 					</div>
 				</div>
