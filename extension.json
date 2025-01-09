@@ -30,8 +30,13 @@
 				"title": "计算",
 				"menuItems": [
 					{
+						"id": "go_project",
+						"title": "前往项目主页...",
+						"registerFn": "go_project"
+					},
+					{
 						"id": "about",
-						"title": "关于",
+						"title": "关于...",
 						"registerFn": "about"
 					}
 				]
@@ -39,12 +44,22 @@
 		],
 		"sch": [
 			{
-				"id": "home_calculation_tools",
+				"id": "sch_calculation_tools",
 				"title": "计算",
 				"menuItems": [
 					{
+						"id": "resistive_divider_calculation",
+						"title": "分压电阻计算...",
+						"registerFn": "resistive_divider_calculation"
+					},
+					{
+						"id": "go_project",
+						"title": "前往项目主页...",
+						"registerFn": "go_project"
+					},
+					{
 						"id": "about",
-						"title": "关于",
+						"title": "关于...",
 						"registerFn": "about"
 					}
 				]
@@ -64,6 +79,11 @@
 						"id": "resistive_divider_calculation",
 						"title": "分压电阻计算...",
 						"registerFn": "resistive_divider_calculation"
+					},
+					{
+						"id": "go_project",
+						"title": "前往项目主页...",
+						"registerFn": "go_project"
 					},
 					{
 						"id": "about",
