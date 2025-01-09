@@ -1,4 +1,4 @@
-## ![](https://socialify.git.ci/xiaowine/pcb-calculation-tools/image?description=1&descriptionEditable=%e5%98%89%e7%ab%8b%e5%88%9bEDA+PCB+%e8%be%85%e5%8a%a9%e8%ae%a1%e7%ae%97%e6%8f%92%e4%bb%b6&language=1&name=1&owner=1&theme=Auto =700x)
+## ![](https://socialify.git.ci/xiaowine/pcb-calculation-tools/image?description=1&descriptionEditable=%e5%98%89%e7%ab%8b%e5%88%9bEDA+PCB+%e8%be%85%e5%8a%a9%e8%ae%a1%e7%ae%97%e6%8f%92%e4%bb%b6&language=1&name=1&owner=1&theme=Auto)
 
 ---
 
@@ -15,7 +15,7 @@
 
 ## 怎么使用
 
--   先前往[Releases](https://github.com/xiaowine/-pcb-calculation-tools/releases)下载最新的文件，下载后如果是`zip`请解压，后缀为`.eext`的文件才是EDA的插件文件
+-   先前往[Releases](https://github.com/xiaowine/pcb-calculation-tools/releases)下载最新的文件，下载后如果是`zip`请解压，后缀为`.eext`的文件才是EDA的插件文件
 -   想尝鲜的用户可以前往[Action](https://github.com/xiaowine/pcb-calculation-tools/actions)下载测试版本
 -   下载好后，前往`EDA专业版`，点击顶栏`设置`---`扩展`---`扩展管理器`---`导入扩展`，选择插件文件并加载
 -   当顶栏出现`计算`菜单，则安装完成
