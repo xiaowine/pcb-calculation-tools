@@ -22,10 +22,10 @@ export function about(): void {
 	);
 }
 export function line_width_calculation(): void {
-	eda.sys_IFrame.openIFrame('/iframe/line-width.html', 1000, 550, 'line-width');
+	eda.sys_IFrame.openIFrame('/iframe/line-width.html', 560, 365, 'line-width');
 }
 export function resistive_divider_calculation(): void {
-	eda.sys_IFrame.openIFrame('/iframe/resistive-divider.html', 1000, 720, 'resistive-divider');
+	eda.sys_IFrame.openIFrame('/iframe/resistive-divider.html', 1000, 550, 'resistive-divider');
 }
 export function go_project(): void {
 	eda.sys_Window.open('https://github.com/xiaowine/pcb-calculation-tools');

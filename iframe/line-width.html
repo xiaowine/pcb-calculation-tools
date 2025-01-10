@@ -39,9 +39,7 @@
 
 			body {
 				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-				max-width: 1000px;
-				margin: 2rem auto;
-				padding: 0 1rem;
+				margin: 0px;
 				background-color: var(--background-color);
 				color: var(--text-color);
 				line-height: 1.6;
@@ -52,16 +50,11 @@
 			}
 
 			.calculator-card {
+				width: 500px;
 				background: var(--card-background);
 				padding: 2rem;
 				border-radius: 8px;
 				box-shadow: 0 2px 4px var(--shadow-color);
-			}
-
-			h1 {
-				color: var(--text-color);
-				text-align: center;
-				margin-bottom: 2rem;
 			}
 
 			.calculator-container {
@@ -73,18 +66,17 @@
 			}
 
 			.input-section {
-				flex: 1;
+				width: 100px;
 				padding-right: 2rem;
 				border-right: 1px solid var(--border-color);
 			}
-
 			.results-section {
 				flex: 1;
 				padding-left: 1rem;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
-				min-height: 300px;
+				min-height: 230px;
 			}
 
 			.input-group {
@@ -99,6 +91,7 @@
 			}
 
 			input[type='number'] {
+				width: 60px;
 				padding: 0.8rem;
 				border: 1px solid var(--input-border);
 				border-radius: 4px;
@@ -144,36 +137,6 @@
 				gap: 0.5rem;
 			}
 
-			@media (max-width: 768px) {
-				.calculator-container {
-					flex-direction: column;
-				}
-
-				.input-section {
-					padding-right: 0;
-					border-right: none;
-					border-bottom: 1px solid var(--border-color);
-					padding-bottom: 2rem;
-				}
-
-				.results-section {
-					padding-left: 0;
-					padding-top: 2rem;
-					min-height: auto;
-				}
-
-				.parameters-note {
-					position: static;
-					margin-top: 2rem;
-					text-align: left;
-					padding: 0;
-				}
-
-				.parameters-list {
-					justify-content: flex-start;
-				}
-			}
-
 			input[type='number']::-webkit-inner-spin-button,
 			input[type='number']::-webkit-outer-spin-button {
 				-webkit-appearance: none;
@@ -193,11 +156,10 @@
 				color: var(--text-secondary);
 				text-align: right;
 				padding: 0.5rem;
-				background: var(--card-background);
-				border-radius: 4px;
 			}
 
 			.parameters-note h4 {
+				width: auto;
 				margin: 0 0 0.25rem 0;
 				font-size: 0.8rem;
 				color: var(--text-secondary);
@@ -233,19 +195,19 @@
 			}
 
 			/* 添加切换按钮样式 */
-			.mode-switch {
+			.switch-container {
 				position: absolute;
-				top: -3rem;
+				top: 0.5rem;
 				right: 0;
 				display: flex;
 				gap: 0.5rem;
 				background: var(--card-background);
 				padding: 0.5rem;
 				border-radius: 4px;
-				box-shadow: 0 1px 3px var(--shadow-color);
+				box-shadow: 0 3px 3px var(--shadow-color);
 			}
 
-			.mode-switch button {
+			.switch-container button {
 				padding: 0.5rem 1rem;
 				border: 1px solid var(--primary-color);
 				background: transparent;
@@ -256,31 +218,15 @@
 				transition: all 0.3s ease;
 			}
 
-			.mode-switch button.active {
+			.switch-container button.active {
 				background: var(--primary-color);
 				color: var(--button-text);
 			}
 
-			/* 调整移动端样式 */
-			@media (max-width: 768px) {
-				.mode-switch {
-					position: static;
-					margin-bottom: 1rem;
-					justify-content: center;
-				}
-			}
-
 			/* 添加单位切换按钮样式 */
 			.unit-switch {
-				position: absolute;
-				top: -3rem;
-				left: 0;
 				display: flex;
 				gap: 0.5rem;
-				background: var(--card-background);
-				padding: 0.5rem;
-				border-radius: 4px;
-				box-shadow: 0 1px 3px var(--shadow-color);
 			}
 
 			.unit-switch button {
@@ -299,25 +245,18 @@
 				color: var(--button-text);
 			}
 
-			@media (max-width: 768px) {
-				.unit-switch {
-					position: static;
-					margin-bottom: 1rem;
-					justify-content: center;
-				}
-			}
-
 			/* 添加应用按钮样式 */
 			.apply-width-btn {
-				margin-top: 0.5rem;
+				position: absolute;
+				bottom: 5rem;
+				right: 0;
+				display: flex;
 				padding: 0.5rem 1rem;
 				border: 1px solid var(--primary-color);
 				background: transparent;
 				color: var(--primary-color);
 				border-radius: 4px;
-				cursor: pointer;
 				font-size: 0.875rem;
-				transition: all 0.3s ease;
 			}
 
 			.apply-width-btn:hover {
@@ -330,6 +269,71 @@
 				display: none;
 			}
 		</style>
+	</head>
+	<body>
+		<div class="calculator-card">
+			<div class="calculator-container">
+				<div class="switch-container">
+					<div class="unit-switch" id="unitSwitch">
+						<button class="active" data-unit="mils">mils</button>
+						<button data-unit="mm">mm</button>
+					</div>
+					<div class="mode-switch">
+						<button class="active" data-mode="width">正向计算</button>
+						<button data-mode="current">反向计算</button>
+					</div>
+				</div>
+				<div class="input-section">
+					<form>
+						<div class="input-group">
+							<label id="trackLabel" for="trackInput">电流 (A)</label>
+							<input type="number" id="trackInput" name="trackInput" required step="0.1" min="0" value="1" />
+						</div>
+
+						<div class="input-group">
+							<label for="tempRise">温升 (°C)</label>
+							<input type="number" id="tempRise" name="tempRise" required step="0.1" min="0" value="30" />
+						</div>
+
+						<div class="input-group">
+							<label for="copperThickness">铜箔厚度 (oz)</label>
+							<input type="number" id="copperThickness" name="copperThickness" required step="0.1" min="0" value="1" />
+							<div class="input-hint">嘉立创免费打印外层铜箔厚度1oz，内层0.5oz</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="results-section">
+					<div class="results">
+						<div class="result-item">
+							<span id="innerLabel">内层印制线宽度:</span>
+							<span class="result-value">
+								<span id="innerResult">-</span>
+							</span>
+						</div>
+						<div class="result-item">
+							<span id="outerLabel">外层印制线宽度:</span>
+							<span class="result-value">
+								<span id="outerResult">-</span>
+							</span>
+						</div>
+						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽</button>
+						<span id="current-tips" class="input-hint">点击PCB导线可直接导入线宽</span>
+					</div>
+				</div>
+
+				<div class="parameters-note">
+					<h4>计算参数</h4>
+					<ul class="parameters-list">
+						<li><span class="parameter-name">k<sub>inner</sub>:</span>0.024</li>
+						<li><span class="parameter-name">k<sub>outer</sub>:</span>0.048</li>
+						<li><span class="parameter-name">b:</span>0.44</li>
+						<li><span class="parameter-name">c:</span>0.725</li>
+					</ul>
+					<div class="input-hint">结果为依据 IPC-2221 计算得到的估计值<br />实际结果会随应用条件而发生变化</div>
+				</div>
+			</div>
+		</div>
 		<script>
 			// DOM 元素引用
 			const DOM = {
@@ -392,7 +396,7 @@
 							console.log(track);
 
 							if (track['pcbItemPrimitiveType'] === 'Track') {
-								const widthInMils = track['width'] * 10;
+								const widthInMils = track['width'];
 								const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
 								DOM.trackInput.value = displayValue;
 								calculateTrace();
@@ -472,8 +476,9 @@
 
 			// 修改应用宽度的函数
 			function applyTrackWidth(innerWidth, outerWidth) {
-				console.log('应用内层线宽:', innerWidth);
-				console.log('应用外层线宽:', outerWidth);
+				console.log('内层线宽:', innerWidth);
+				console.log('外层线宽:', outerWidth);
+				console.log('等待选择导线');
 				eda.pcb_Event.addMouseEventListener(
 					TRACK_EVENT_ID,
 					'selected',
@@ -481,16 +486,17 @@
 						const selectedPrimitives = await eda.pcb_SelectControl.getSelectedPrimitives();
 						if (selectedPrimitives.length === 1) {
 							const track = selectedPrimitives[0];
-							console.log(track);
+							console.log('已选择导线：', track);
 							if (track['pcbItemPrimitiveType'] === 'Track') {
 								const layerId = track['layerId'];
 								const globalIndex = track['globalIndex'];
 								if (layerId >= 1 && layerId <= 2) {
-									console.log(outerWidth * 10);
-									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: outerWidth * 10 });
+									console.log(outerWidth);
+									console.log('eda.pcb_PrimitiveLine.modify("' + globalIndex + '", { lineWidth: "' + outerWidth + '" });');
+									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: outerWidth });
 								} else if (layerId >= 15 && layerId <= 46) {
-									console.log(innerWidth * 10);
-									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: innerWidth * 10 });
+									console.log(innerWidth);
+									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: innerWidth });
 								}
 								// const widthInMils = track['width'] * 10;
 								// const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
@@ -515,8 +521,8 @@
 						const widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
 						const widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
 
-						DOM.innerResult.innerHTML = `${widthInnerMils.toFixed(2)} mils / ${(widthInnerMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
-						DOM.outerResult.innerHTML = `${widthOuterMils.toFixed(2)} mils / ${(widthOuterMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
+						DOM.innerResult.innerHTML = `${widthInnerMils.toFixed(1)} mils / ${(widthInnerMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
+						DOM.outerResult.innerHTML = `${widthOuterMils.toFixed(1)} mils / ${(widthOuterMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
 
 						const widthToApply = displayUnit === 'mm' ? widthOuterMils * UNIT_MIL_TO_MM : widthOuterMils;
 						DOM.applyWidthBtn.dataset.width = widthToApply;
@@ -575,69 +581,5 @@
 				}
 			});
 		</script>
-	</head>
-	<body>
-		<div class="calculator-card">
-			<h1>宽度计算器</h1>
-			<div class="calculator-container">
-				<div class="unit-switch" id="unitSwitch">
-					<button class="active" data-unit="mils">mils</button>
-					<button data-unit="mm">mm</button>
-				</div>
-				<div class="mode-switch">
-					<button class="active" data-mode="width">正向计算</button>
-					<button data-mode="current">反向计算</button>
-				</div>
-				<div class="input-section">
-					<form>
-						<div class="input-group">
-							<label id="trackLabel" for="trackInput">电流 (A)</label>
-							<input type="number" id="trackInput" name="trackInput" required step="0.1" min="0" value="1" />
-						</div>
-
-						<div class="input-group">
-							<label for="tempRise">温升 (°C)</label>
-							<input type="number" id="tempRise" name="tempRise" required step="0.1" min="0" value="30" />
-						</div>
-
-						<div class="input-group">
-							<label for="copperThickness">铜箔厚度 (oz)</label>
-							<input type="number" id="copperThickness" name="copperThickness" required step="0.1" min="0" value="1" />
-							<div class="input-hint">嘉立创免费打印的外层铜箔厚度为1oz，内层0.5oz</div>
-							<div class="input-hint">此求得的结果是估算值，依据 IPC-2221 标准下计算,实际结果会随应用条件而发生变化</div>
-						</div>
-					</form>
-				</div>
-
-				<div class="results-section">
-					<div class="results">
-						<div class="result-item">
-							<span id="innerLabel">内层印制线宽度:</span>
-							<span class="result-value">
-								<span id="innerResult">-</span>
-							</span>
-						</div>
-						<div class="result-item">
-							<span id="outerLabel">外层印制线宽度:</span>
-							<span class="result-value">
-								<span id="outerResult">-</span>
-							</span>
-						</div>
-						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽</button>
-						<span id="current-tips" class="input-hint">点击PCB导线可直接导入线宽</span>
-					</div>
-				</div>
-
-				<div class="parameters-note">
-					<h4>计算参数</h4>
-					<ul class="parameters-list">
-						<li><span class="parameter-name">k<sub>inner</sub>:</span>0.024</li>
-						<li><span class="parameter-name">k<sub>outer</sub>:</span>0.048</li>
-						<li><span class="parameter-name">b:</span>0.44</li>
-						<li><span class="parameter-name">c:</span>0.725</li>
-					</ul>
-				</div>
-			</div>
-		</div>
 	</body>
 </html>

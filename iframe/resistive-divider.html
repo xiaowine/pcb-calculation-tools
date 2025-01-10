@@ -39,32 +39,28 @@
 				input[type='number'],
 				input[type='text'] {
 					background-color: var(--card-background) !important;
-					color: var(--text-color);
+					color: var(--text-color) !important;
 				}
 
 				/* 其他深色模式的样式 */
 				body {
-					color: var(--text-color);
-					background-color: var(--background-color);
+					color: var(--text-color) !important;
+					background-color: var(--background-color) !important;
 				}
 			}
 
 			body {
 				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-				max-width: 1000px;
-				margin: 2rem auto;
-				padding: 0 1rem;
 				background-color: var(--background-color);
 				color: var(--text-color);
 				line-height: 1.6;
+				margin: 0px;
 			}
 
 			.container {
 				display: flex;
 				background-color: var(--card-background);
 				padding: 30px;
-				box-shadow: 0 4px 8px var(--shadow-color);
-				border-radius: 10px;
 			}
 
 			.left-section {
@@ -134,7 +130,6 @@
 			}
 
 			.results {
-				margin-top: 80px;
 				padding: 20px;
 				background-color: var(--background-color);
 				border-radius: 6px;
@@ -176,7 +171,6 @@
 	<body>
 		<div class="container">
 			<div class="left-section">
-				<h1>电压分压计算器</h1>
 				<label for="Vin">输入电压 (Vin):</label>
 				<input type="number" id="Vin" value="10" step="0.1" />
 
@@ -212,7 +206,6 @@
 				365, 374, 383, 392, 402, 412, 422, 432, 442, 453, 464, 475, 487, 499, 511, 523, 536, 549, 562, 576, 590, 604, 619, 634, 649, 665, 681,
 				698, 715, 732, 750, 768, 787, 806, 825, 845, 866, 887, 909, 931, 953, 976,
 			];
-
 			const E96_extended = E96.flatMap((value) => {
 				return Array.from({ length: 6 }, (_, i) => value * Math.pow(10, i));
 			});
@@ -281,21 +274,6 @@
 				});
 			}
 
-			document.getElementById('calculateButton').addEventListener('click', () => {
-				const Vin = document.getElementById('Vin').value;
-				const Vout = document.getElementById('Vout').value;
-				const offsetPercentage = document.getElementById('offsetPercentage').value;
-
-				const minResistorValue = parseResistorValue(document.getElementById('minResistor').value);
-				const maxResistorValue = parseResistorValue(document.getElementById('maxResistor').value);
-
-				if (minResistorValue && maxResistorValue) {
-					const combinations = findResistorCombinations(Vin, Vout, offsetPercentage, minResistorValue, maxResistorValue);
-					updateResults(combinations);
-				} else {
-					alert('请输入有效的电阻值（带单位 k 或 M）');
-				}
-			});
 			// 辅助函数：格式化电阻值
 			function formatResistorValue(value) {
 				if (value >= 1e6) {
@@ -306,6 +284,25 @@
 					return value.toFixed(2) + ' Ω'; // 欧姆
 				}
 			}
+
+			// 初始化
+			document.addEventListener('DOMContentLoaded', function () {
+				document.getElementById('calculateButton').addEventListener('click', () => {
+					const Vin = document.getElementById('Vin').value;
+					const Vout = document.getElementById('Vout').value;
+					const offsetPercentage = document.getElementById('offsetPercentage').value;
+
+					const minResistorValue = parseResistorValue(document.getElementById('minResistor').value);
+					const maxResistorValue = parseResistorValue(document.getElementById('maxResistor').value);
+
+					if (minResistorValue && maxResistorValue) {
+						const combinations = findResistorCombinations(Vin, Vout, offsetPercentage, minResistorValue, maxResistorValue);
+						updateResults(combinations);
+					} else {
+						alert('请输入有效的电阻值（带单位 k 或 M）');
+					}
+				});
+			});
 		</script>
 	</body>
 </html>
