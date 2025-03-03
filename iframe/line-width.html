@@ -390,13 +390,13 @@
 					TRACK_EVENT_ID,
 					'selected',
 					async (eventType) => {
-						const selectedPrimitives = await eda.pcb_SelectControl.getSelectedPrimitives();
+						const selectedPrimitives = await eda.pcb_SelectControl.getAllSelectedPrimitives();
 						if (selectedPrimitives.length === 1) {
 							const track = selectedPrimitives[0];
 							console.log(track);
 
-							if (track['pcbItemPrimitiveType'] === 'Track') {
-								const widthInMils = track['width'];
+							if (track['primitiveType'] === 'Line') {
+								const widthInMils = track['lineWidth'];
 								const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
 								DOM.trackInput.value = displayValue;
 								calculateTrace();
