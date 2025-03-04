@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-Hans">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>电感计算器</title>
+		<link rel="stylesheet" href="/iframe/css/inductor-design.css" />
+		<link rel="stylesheet" href="/iframe/css/common.css" />
+	</head>
+	<body>
+		<div class="calculator-card">
+			<div class="calculator-header">
+				<h1 class="calculator-title">电感计算器</h1>
+				<div class="mode-switch">
+					<button class="active" data-mode="buck">Buck降压</button>
+					<button data-mode="boost">Boost升压</button>
+				</div>
+			</div>
+
+			<div class="calculator-container">
+				<div class="input-output-container">
+					<div class="input-section">
+						<form id="inductorForm">
+							<div class="input-row">
+								<div class="input-group">
+									<label for="vinMax">输入电压 (V<sub>in</sub>)</label>
+									<input type="number" id="vinMax" name="vinMax" required step="0.1" min="0" value="12" />
+								</div>
+
+								<div class="input-group">
+									<label for="voutMax">输出电压 (V<sub>out</sub>)</label>
+									<input type="number" id="voutMax" name="voutMax" required step="0.1" min="0" value="3.3" />
+									<!-- 添加电压关系错误提示 -->
+									<div class="voltage-error" id="voltageError">输入/输出电压关系与当前模式不匹配</div>
+								</div>
+							</div>
+
+							<div class="input-group">
+								<label for="kind">电流纹波系数 (K<sub>ind</sub>)</label>
+								<input type="number" id="kind" name="kind" required step="0.01" min="0" value="0.2" max="1" />
+							</div>
+
+							<div class="input-row">
+								<div class="input-group">
+									<label for="iout">输出电流 (A)</label>
+									<input type="number" id="iout" name="iout" required step="0.01" min="0" value="3" />
+								</div>
+
+								<div class="input-group">
+									<label for="fsw">开关频率 (kHz)</label>
+									<input type="number" id="fsw" name="fsw" required step="1" min="0" value="500" />
+								</div>
+							</div>
+
+							<div class="button-container">
+								<input type="submit" value="计算电感值" />
+							</div>
+						</form>
+					</div>
+
+					<div class="results-section">
+						<div class="result-item">
+							<div class="result-label">最小电感值</div>
+							<div class="result-value" id="inductorResult">-</div>
+
+							<!-- 添加分隔线和推荐电感值 -->
+							<div class="result-divider"></div>
+							<div class="result-label">推荐电感值</div>
+							<div class="result-value-recommended" id="recommendedInductorResult">-</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="parameters-note">
+					<h4>参考信息</h4>
+					<ul class="parameters-list">
+						<li><span class="parameter-name">K<sub>ind</sub>:</span>0.2 - 0.4</li>
+					</ul>
+					<div class="input-hint">较小的电流纹波系数将导致较大的电感值，减小输出电流纹波，但会增加电感体积和成本</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			// DOM 元素引用
+			const DOM = {
+				vinMax: null,
+				voutMax: null,
+				kind: null,
+				iout: null,
+				fsw: null,
+				inductorResult: null,
+				modeButtons: null,
+				voltageError: null,
+				// 添加推荐电感值引用
+				recommendedInductorResult: null,
+			};
+
+			// 当前计算模式
+			let calculationMode = 'buck';
+
+			// 是否正在手动切换模式
+			let manualModeChange = false;
+
+			// 是否存在电压错误
+			let hasVoltageError = false;
+
+			// 初始化 DOM 元素引用
+			function initializeDOMReferences() {
+				DOM.vinMax = document.getElementById('vinMax');
+				DOM.voutMax = document.getElementById('voutMax');
+				DOM.kind = document.getElementById('kind');
+				DOM.iout = document.getElementById('iout');
+				DOM.fsw = document.getElementById('fsw');
+				DOM.inductorResult = document.getElementById('inductorResult');
+				DOM.modeButtons = document.querySelectorAll('.mode-switch button');
+				DOM.voltageError = document.getElementById('voltageError');
+				// 添加推荐电感值引用
+				DOM.recommendedInductorResult = document.getElementById('recommendedInductorResult');
+			}
+
+			// 计算Buck转换器最小电感值（单位：μH）
+			function calculateBuckLMin(voutMax, vinMax, kind, iout, fsw) {
+				const fswInHz = fsw * 1000; // 转换为Hz
+				const numerator = voutMax * (vinMax - voutMax);
+				const denominator = vinMax * kind * iout * fswInHz;
+				return (numerator / denominator) * 1e6; // 转换为μH
+			}
+
+			// 计算Boost转换器最小电感值（单位：μH）
+			function calculateBoostLMin(voutMax, vinMax, kind, iout, fsw) {
+				const fswInHz = fsw * 1000; // 转换为Hz
+				const numerator = vinMax * (voutMax - vinMax);
+				const denominator = voutMax * kind * iout * fswInHz;
+				return (numerator / denominator) * 1e6; // 转换为μH
+			}
+
+			// 修改检查输入输出电压关系的函数
+			function checkVoltageRelationship() {
+				const vinMax = parseFloat(DOM.vinMax.value) || 0;
+				const voutMax = parseFloat(DOM.voutMax.value) || 0;
+
+				if (vinMax && voutMax) {
+					// 检查电压关系是否与当前模式匹配
+					const isBuckRelationship = vinMax > voutMax;
+
+					if ((calculationMode === 'buck' && !isBuckRelationship) || (calculationMode === 'boost' && isBuckRelationship)) {
+						if (!manualModeChange) {
+							// 自动切换模式 - 不显示提示
+							const newMode = isBuckRelationship ? 'buck' : 'boost';
+							calculationMode = newMode;
+							updateModeButtons();
+							hasVoltageError = false;
+							DOM.voltageError.classList.remove('show');
+							return true; // 已自动切换模式
+						} else {
+							// 手动切换模式时显示错误提示
+							DOM.voltageError.classList.add('show');
+							hasVoltageError = true;
+							return false; // 模式不匹配
+						}
+					} else {
+						// 电压关系与模式匹配，隐藏错误提示
+						DOM.voltageError.classList.remove('show');
+						hasVoltageError = false;
+						return true; // 模式匹配
+					}
+				}
+
+				// 默认隐藏错误提示
+				DOM.voltageError.classList.remove('show');
+				hasVoltageError = false;
+				return true; // 默认允许计算
+			}
+
+			// 计算推荐电感值（标准系列值）
+			function calculateRecommendedInductorValue(minInductorValue) {
+				// 标准电感系列值（单位：μH）
+				const standardInductorValues = [
+					0.1, 0.15, 0.22, 0.33, 0.47, 0.68, 1, 1.5, 2.2, 3.3, 4.7, 6.8, 10, 15, 22, 33, 47, 68, 100, 150, 220, 330, 470, 680, 1000, 1500,
+					2200, 3300, 4700, 6800, 10000,
+				];
+
+				// 找到大于最小电感值的最接近标准值
+				let recommendedValue = standardInductorValues[standardInductorValues.length - 1];
+
+				for (let i = 0; i < standardInductorValues.length; i++) {
+					if (standardInductorValues[i] >= minInductorValue) {
+						recommendedValue = standardInductorValues[i];
+						break;
+					}
+				}
+
+				return recommendedValue;
+			}
+
+			function switchCalculationMode(mode) {
+				manualModeChange = true;
+				calculationMode = mode;
+				updateModeButtons();
+
+				// 检查电压关系
+				checkVoltageRelationship();
+
+				calculateInductor();
+
+				// 重置手动切换标志
+				setTimeout(() => {
+					manualModeChange = false;
+				}, 100);
+			}
+
+			function updateModeButtons() {
+				DOM.modeButtons.forEach((btn) => {
+					btn.classList.toggle('active', btn.dataset.mode === calculationMode);
+				});
+			}
+
+			function calculateInductor() {
+				// 检查电压关系并确定是否计算
+				const voltageRelationshipValid = checkVoltageRelationship();
+
+				// 如果存在手动模式切换引起的电压错误，则不计算
+				if (manualModeChange && !voltageRelationshipValid) {
+					DOM.inductorResult.textContent = '-';
+					DOM.recommendedInductorResult.textContent = '-';
+					return;
+				}
+
+				const vinMax = parseFloat(DOM.vinMax.value) || 0;
+				const voutMax = parseFloat(DOM.voutMax.value) || 0;
+				const kind = parseFloat(DOM.kind.value) || 0;
+				const iout = parseFloat(DOM.iout.value) || 0;
+				const fsw = parseFloat(DOM.fsw.value) || 0;
+
+				if (vinMax && voutMax && kind && iout && fsw) {
+					let inductorValue;
+					if (calculationMode === 'buck') {
+						inductorValue = calculateBuckLMin(voutMax, vinMax, kind, iout, fsw);
+					} else {
+						inductorValue = calculateBoostLMin(voutMax, vinMax, kind, iout, fsw);
+					}
+
+					// 计算推荐电感值
+					const recommendedValue = calculateRecommendedInductorValue(inductorValue);
+
+					// 显示最小电感值
+					let displayValue, unit;
+					if (inductorValue >= 1000) {
+						displayValue = (inductorValue / 1000).toFixed(2);
+						unit = 'mH';
+					} else {
+						displayValue = inductorValue.toFixed(2);
+						unit = 'μH';
+					}
+					DOM.inductorResult.textContent = `${displayValue} ${unit}`;
+
+					// 显示推荐电感值
+					let recDisplayValue, recUnit;
+					if (recommendedValue >= 1000) {
+						recDisplayValue = (recommendedValue / 1000).toFixed(2);
+						recUnit = 'mH';
+					} else {
+						recDisplayValue = recommendedValue.toFixed(2);
+						recUnit = 'μH';
+					}
+					DOM.recommendedInductorResult.textContent = `${recDisplayValue} ${recUnit}`;
+				} else {
+					DOM.inductorResult.textContent = '-';
+					DOM.recommendedInductorResult.textContent = '-';
+				}
+			}
+
+			// 初始化
+			document.addEventListener('DOMContentLoaded', function () {
+				initializeDOMReferences();
+
+				// 注册按钮事件
+				DOM.modeButtons.forEach((btn) => {
+					btn.addEventListener('click', () => switchCalculationMode(btn.dataset.mode));
+				});
+
+				// 注册表单提交事件
+				const form = document.getElementById('inductorForm');
+				form.addEventListener('submit', (event) => {
+					event.preventDefault();
+					calculateInductor();
+				});
+
+				// 添加输入参数的变化监听 - 所有输入字段自动触发计算
+				const inputFields = [DOM.vinMax, DOM.voutMax, DOM.kind, DOM.iout, DOM.fsw];
+				inputFields.forEach((field) => {
+					field.addEventListener('input', () => {
+						// 取消手动切换标志，确保可以自动适应电压关系
+						manualModeChange = false;
+						calculateInductor();
+					});
+				});
+
+				// 初始计算
+				calculateInductor();
+			});
+		</script>
+	</body>
+</html>

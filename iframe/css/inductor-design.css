@@ -1,0 +1,219 @@
+.calculator-card {
+	width: 100%;
+	max-width: 600px;
+	background: var(--card-background);
+	padding: 2rem;
+	border-radius: 12px;
+	box-shadow: 0 8px 24px var(--shadow-color);
+	transition: all 0.3s ease;
+}
+
+.calculator-header {
+	margin-bottom: 1.5rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--border-color);
+	position: relative;
+}
+
+.calculator-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--primary-color);
+	margin: 0;
+}
+
+.calculator-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	position: relative;
+}
+
+.input-output-container {
+	display: flex;
+	gap: 2rem;
+	flex-wrap: wrap;
+}
+
+.input-section {
+	flex: 2;
+	min-width: 280px;
+}
+
+.results-section {
+	flex: 1;
+	min-width: 180px;
+	background: var(--background-color);
+	padding: 1.5rem;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.input-group {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1.2rem;
+}
+
+.input-row {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 1.2rem;
+}
+
+.input-row .input-group {
+	flex: 1;
+	margin-bottom: 0;
+}
+
+label {
+	font-size: 0.95rem;
+}
+
+input[type='number'] {
+	width: 100%;
+	padding: 0.8rem 1rem;
+	border-radius: 6px;
+	box-sizing: border-box;
+}
+
+input[type='number']:focus {
+	box-shadow: 0 0 0 3px var(--accent-color);
+}
+
+.button-container {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 1.5rem;
+	/* 隐藏计算按钮，因为现在自动计算 */
+	display: none;
+}
+
+input[type='submit'] {
+	background-color: var(--primary-color);
+	color: white;
+	padding: 0.8rem 1.5rem;
+	border: none;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+input[type='submit']:hover {
+	background-color: var(--hover-color);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+input[type='submit']:active {
+	transform: translateY(0);
+	box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.result-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	text-align: center;
+}
+
+.result-label {
+	margin-bottom: 0.8rem;
+	font-size: 1rem;
+	color: var(--text-secondary);
+}
+
+.result-value {
+	font-weight: 600;
+	font-size: 1.8rem;
+	color: var(--primary-color);
+}
+
+.result-value-recommended {
+	font-weight: 600;
+	font-size: 1.4rem;
+	color: #4caf50; /* 使用绿色表示推荐值 */
+	margin-top: 1rem;
+}
+
+.result-divider {
+	width: 80%;
+	height: 1px;
+	background: var(--border-color);
+	margin: 1rem 0;
+}
+
+.parameters-note {
+	padding-top: 1rem;
+	border-top: 1px solid var(--border-color);
+}
+
+.parameters-list li {
+	background: var(--accent-color);
+	padding: 0.3rem 0.8rem;
+	border-radius: 4px;
+}
+
+.mode-switch {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	gap: 0.3rem;
+	padding: 0.3rem;
+	border-radius: 6px;
+}
+
+.mode-switch button {
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--primary-color);
+	background: transparent;
+	color: var(--primary-color);
+	border-radius: 4px;
+	font-size: 0.9rem;
+	font-weight: 500;
+}
+
+.mode-switch button.active {
+	background: var(--primary-color);
+	color: var(--button-text);
+}
+
+.voltage-error {
+	color: #f44336;
+	font-size: 0.85rem;
+	margin-top: 0.3rem;
+	display: none;
+}
+
+.voltage-error.show {
+	display: block;
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+	.calculator-card {
+		padding: 1.5rem;
+	}
+
+	.input-output-container {
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.results-section {
+		min-height: 100px;
+	}
+
+	.input-row {
+		flex-wrap: wrap;
+	}
+}

@@ -32,12 +32,17 @@
 					{
 						"id": "line_width_calculation",
 						"title": "线宽计算...",
-						"registerFn": "line_width_calculation"
+						"registerFn": "open_page_line_width_calculation"
+					},
+					{
+						"id": "inductor_design",
+						"title": "电感计算...",
+						"registerFn": "open_page_inductor_design"
 					},
 					{
 						"id": "resistive_divider_calculation",
 						"title": "分压电阻计算...",
-						"registerFn": "resistive_divider_calculation"
+						"registerFn": "open_page_resistive_divider_calculation"
 					},
 					{
 						"id": "go_project",
@@ -47,7 +52,7 @@
 					{
 						"id": "about",
 						"title": "关于...",
-						"registerFn": "about"
+						"registerFn": "open_page_about"
 					}
 				]
 			}
@@ -60,7 +65,12 @@
 					{
 						"id": "resistive_divider_calculation",
 						"title": "分压电阻计算...",
-						"registerFn": "resistive_divider_calculation"
+						"registerFn": "open_page_resistive_divider_calculation"
+					},
+					{
+						"id": "inductor_design",
+						"title": "电感计算...",
+						"registerFn": "open_page_inductor_design"
 					},
 					{
 						"id": "go_project",
@@ -70,7 +80,7 @@
 					{
 						"id": "about",
 						"title": "关于...",
-						"registerFn": "about"
+						"registerFn": "open_page_about"
 					}
 				]
 			}
@@ -83,12 +93,17 @@
 					{
 						"id": "line_width_calculation",
 						"title": "线宽计算...",
-						"registerFn": "line_width_calculation"
+						"registerFn": "open_page_line_width_calculation"
+					},
+					{
+						"id": "inductor_design",
+						"title": "电感计算...",
+						"registerFn": "open_page_inductor_design"
 					},
 					{
 						"id": "resistive_divider_calculation",
 						"title": "分压电阻计算...",
-						"registerFn": "resistive_divider_calculation"
+						"registerFn": "open_page_resistive_divider_calculation"
 					},
 					{
 						"id": "go_project",
@@ -98,7 +113,7 @@
 					{
 						"id": "about",
 						"title": "关于...",
-						"registerFn": "about"
+						"registerFn": "open_page_about"
 					}
 				]
 			}

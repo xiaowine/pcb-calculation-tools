@@ -4,283 +4,20 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>宽度计算器</title>
-		<style>
-			:root {
-				--primary-color: #2196f3;
-				--hover-color: #1976d2;
-				--background-color: #f5f5f5;
-				--card-background: #ffffff;
-				--text-color: #333;
-				--text-secondary: #666;
-				--text-tertiary: #888;
-				--border-color: #eee;
-				--input-border: #ddd;
-				--shadow-color: rgba(0, 0, 0, 0.1);
-				--button-text: #fff;
-				scrollbar-width: none; /* Firefox */
-				-ms-overflow-style: none; /* IE and Edge */
-			}
-
-			@media (prefers-color-scheme: dark) {
-				:root {
-					--primary-color: #2196f3;
-					--hover-color: #1976d2;
-					--background-color: #1a1a1a;
-					--card-background: #242424;
-					--text-color: #e1e1e1;
-					--text-secondary: #a1a1a1;
-					--text-tertiary: #808080;
-					--border-color: #383838;
-					--input-border: #383838;
-					--shadow-color: rgba(0, 0, 0, 0.3);
-					--button-text: #fff;
-				}
-			}
-
-			body {
-				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-				margin: 0px;
-				background-color: var(--background-color);
-				color: var(--text-color);
-				line-height: 1.6;
-			}
-
-			body::-webkit-scrollbar {
-				display: none; /* Chrome, Safari and Opera */
-			}
-
-			.calculator-card {
-				width: 500px;
-				background: var(--card-background);
-				padding: 2rem;
-				border-radius: 8px;
-				box-shadow: 0 2px 4px var(--shadow-color);
-			}
-
-			.calculator-container {
-				display: flex;
-				gap: 2rem;
-
-				align-items: start;
-				position: relative;
-			}
-
-			.input-section {
-				width: 100px;
-				padding-right: 2rem;
-				border-right: 1px solid var(--border-color);
-			}
-			.results-section {
-				flex: 1;
-				padding-left: 1rem;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				min-height: 230px;
-			}
-
-			.input-group {
-				display: flex;
-				flex-direction: column;
-			}
-
-			label {
-				margin-bottom: 0.5rem;
-				color: var(--text-secondary);
-				font-weight: 500;
-			}
-
-			input[type='number'] {
-				width: 60px;
-				padding: 0.8rem;
-				border: 1px solid var(--input-border);
-				border-radius: 4px;
-				font-size: 1rem;
-				transition: border-color 0.3s ease;
-				background-color: var(--card-background);
-				color: var(--text-color);
-			}
-
-			input[type='number']:focus {
-				outline: none;
-				border-color: var(--primary-color);
-				box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.15);
-			}
-
-			input[type='submit'] {
-				background-color: var(--primary-color);
-				color: white;
-				padding: 1rem;
-				border: none;
-				border-radius: 4px;
-				font-size: 1rem;
-				cursor: pointer;
-				transition: background-color 0.3s ease;
-				margin-top: 1rem;
-			}
-
-			input[type='submit']:hover {
-				background-color: var(--hover-color);
-			}
-
-			.result-item {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding: 0.5rem 0;
-			}
-
-			.result-value {
-				font-weight: bold;
-				color: var(--primary-color);
-				display: flex;
-				gap: 0.5rem;
-			}
-
-			input[type='number']::-webkit-inner-spin-button,
-			input[type='number']::-webkit-outer-spin-button {
-				-webkit-appearance: none;
-				margin: 0;
-			}
-
-			input[type='number'] {
-				-moz-appearance: textfield; /* Firefox */
-				appearance: textfield; /* Standard */
-			}
-
-			.parameters-note {
-				position: absolute;
-				bottom: -2rem;
-				right: 0;
-				font-size: 0.75rem;
-				color: var(--text-secondary);
-				text-align: right;
-				padding: 0.5rem;
-			}
-
-			.parameters-note h4 {
-				width: auto;
-				margin: 0 0 0.25rem 0;
-				font-size: 0.8rem;
-				color: var(--text-secondary);
-				font-weight: normal;
-			}
-
-			.parameters-list {
-				margin: 0;
-				padding: 0;
-				list-style: none;
-				display: flex;
-
-				gap: 1rem;
-				flex-wrap: wrap;
-				justify-content: flex-end;
-			}
-
-			.parameters-list li {
-				margin: 0;
-				white-space: nowrap;
-			}
-
-			.parameter-name {
-				color: var(--text-tertiary);
-				margin-right: 0.25rem;
-			}
-
-			/* 添加提示文本的样式 */
-			.input-hint {
-				font-size: 0.75rem;
-				color: var(--text-secondary);
-				margin-top: 0.25rem;
-			}
-
-			/* 添加切换按钮样式 */
-			.switch-container {
-				position: absolute;
-				top: 0.5rem;
-				right: 0;
-				display: flex;
-				gap: 0.5rem;
-				background: var(--card-background);
-				padding: 0.5rem;
-				border-radius: 4px;
-				box-shadow: 0 3px 3px var(--shadow-color);
-			}
-
-			.switch-container button {
-				padding: 0.5rem 1rem;
-				border: 1px solid var(--primary-color);
-				background: transparent;
-				color: var(--primary-color);
-				border-radius: 4px;
-				cursor: pointer;
-				font-size: 0.875rem;
-				transition: all 0.3s ease;
-			}
-
-			.switch-container button.active {
-				background: var(--primary-color);
-				color: var(--button-text);
-			}
-
-			/* 添加单位切换按钮样式 */
-			.unit-switch {
-				display: flex;
-				gap: 0.5rem;
-			}
-
-			.unit-switch button {
-				padding: 0.5rem 1rem;
-				border: 1px solid var(--primary-color);
-				background: transparent;
-				color: var(--primary-color);
-				border-radius: 4px;
-				cursor: pointer;
-				font-size: 0.875rem;
-				transition: all 0.3s ease;
-			}
-
-			.unit-switch button.active {
-				background: var(--primary-color);
-				color: var(--button-text);
-			}
-
-			/* 添加应用按钮样式 */
-			.apply-width-btn {
-				position: absolute;
-				bottom: 5rem;
-				right: 0;
-				display: flex;
-				padding: 0.5rem 1rem;
-				border: 1px solid var(--primary-color);
-				background: transparent;
-				color: var(--primary-color);
-				border-radius: 4px;
-				font-size: 0.875rem;
-			}
-
-			.apply-width-btn:hover {
-				background: var(--primary-color);
-				color: var(--button-text);
-			}
-
-			/* 修改可见性类，用于反向计算时隐藏按钮 */
-			.hidden {
-				display: none;
-			}
-		</style>
+		<link rel="stylesheet" href="/iframe/css/line-width.css" />
+		<link rel="stylesheet" href="/iframe/css/common.css" />
 	</head>
 	<body>
 		<div class="calculator-card">
 			<div class="calculator-container">
 				<div class="switch-container">
 					<div class="unit-switch" id="unitSwitch">
-						<button class="active" data-unit="mils">mils</button>
-						<button data-unit="mm">mm</button>
+						<button class="switch-button active" data-unit="mils">mils</button>
+						<button class="switch-button" data-unit="mm">mm</button>
 					</div>
 					<div class="mode-switch">
-						<button class="active" data-mode="width">正向计算</button>
-						<button data-mode="current">反向计算</button>
+						<button class="switch-button active" data-mode="width">正向计算</button>
+						<button class="switch-button" data-mode="current">反向计算</button>
 					</div>
 				</div>
 				<div class="input-section">
@@ -306,19 +43,21 @@
 				<div class="results-section">
 					<div class="results">
 						<div class="result-item">
-							<span id="innerLabel">内层印制线宽度:</span>
+							<span id="innerLabel" class="result-label">内层印制线宽度:</span>
 							<span class="result-value">
-								<span id="innerResult">-</span>
+								<span id="innerResult" class="result-primary">-</span>
+								<span id="innerResultSecondary" class="result-secondary"></span>
 							</span>
 						</div>
 						<div class="result-item">
-							<span id="outerLabel">外层印制线宽度:</span>
+							<span id="outerLabel" class="result-label">外层印制线宽度:</span>
 							<span class="result-value">
-								<span id="outerResult">-</span>
+								<span id="outerResult" class="result-primary">-</span>
+								<span id="outerResultSecondary" class="result-secondary"></span>
 							</span>
 						</div>
-						<button id="applyWidthBtn" class="apply-width-btn">应用外层线宽</button>
-						<span id="current-tips" class="input-hint">点击PCB导线可直接导入线宽</span>
+						<button id="applyWidthBtn" class="action-button">应用外层线宽</button>
+						<span id="current-tips" class="input-hint hidden">点击PCB导线可直接导入线宽</span>
 					</div>
 				</div>
 
@@ -350,6 +89,8 @@
 				modeButtons: null,
 				unitButtons: null,
 				unitSwitch: null,
+				innerResultSecondary: null,
+				outerResultSecondary: null,
 			};
 
 			// 常量定义
@@ -382,6 +123,8 @@
 				DOM.modeButtons = document.querySelectorAll('.mode-switch button');
 				DOM.unitButtons = document.querySelectorAll('.unit-switch button');
 				DOM.unitSwitch = document.getElementById('unitSwitch');
+				DOM.innerResultSecondary = document.getElementById('innerResultSecondary');
+				DOM.outerResultSecondary = document.getElementById('outerResultSecondary');
 			}
 
 			// PCB 线宽选择事件监听
@@ -419,8 +162,10 @@
 
 				if (mode === 'width') {
 					removeTrackSelectionListener();
+					DOM.currentTips.classList.add('hidden');
 				} else {
 					addTrackSelectionListener();
+					DOM.currentTips.classList.remove('hidden');
 				}
 			}
 
@@ -442,6 +187,7 @@
 				DOM.unitButtons.forEach((btn) => {
 					btn.classList.toggle('active', btn.dataset.unit === displayUnit);
 				});
+				calculateTrace(); // 重新计算以更新显示单位
 			}
 
 			function updateLabels() {
@@ -450,14 +196,12 @@
 					DOM.innerLabel.textContent = '内层印制线宽度:';
 					DOM.outerLabel.textContent = '外层印制线宽度:';
 					DOM.applyWidthBtn.classList.remove('hidden');
-					DOM.currentTips.classList.add('hidden');
 					DOM.unitSwitch.style.display = 'none';
 				} else {
 					DOM.trackLabel.textContent = `线宽 (${displayUnit})`;
 					DOM.innerLabel.textContent = '内层最大电流:';
 					DOM.outerLabel.textContent = '外层最大电流:';
 					DOM.applyWidthBtn.classList.add('hidden');
-					DOM.currentTips.classList.remove('hidden');
 					DOM.unitSwitch.style.display = 'flex';
 				}
 			}
@@ -472,6 +216,8 @@
 				DOM.trackInput.value = '';
 				DOM.innerResult.textContent = '-';
 				DOM.outerResult.textContent = '-';
+				DOM.innerResultSecondary.textContent = '';
+				DOM.outerResultSecondary.textContent = '';
 			}
 
 			// 修改应用宽度的函数
@@ -498,10 +244,6 @@
 									console.log(innerWidth);
 									eda.pcb_PrimitiveLine.modify(globalIndex, { lineWidth: innerWidth });
 								}
-								// const widthInMils = track['width'] * 10;
-								// const displayValue = displayUnit === 'mm' ? (widthInMils * UNIT_MIL_TO_MM).toFixed(3) : widthInMils.toFixed(1);
-								// DOM.trackInput.value = displayValue;
-								// calculateTrace();
 							}
 						}
 					},
@@ -520,12 +262,24 @@
 					if (calculationMode === 'width') {
 						const widthInnerMils = Math.pow(inputValue / (kInner * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
 						const widthOuterMils = Math.pow(inputValue / (kOuter * Math.pow(tempRise, b)), 1 / c) / (copperThickness * copperFactor);
+						const widthInnerMm = widthInnerMils * UNIT_MIL_TO_MM;
+						const widthOuterMm = widthOuterMils * UNIT_MIL_TO_MM;
 
-						DOM.innerResult.innerHTML = `${widthInnerMils.toFixed(1)} mils / ${(widthInnerMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
-						DOM.outerResult.innerHTML = `${widthOuterMils.toFixed(1)} mils / ${(widthOuterMils * UNIT_MIL_TO_MM).toFixed(3)} mm`;
+						if (displayUnit === 'mils') {
+							DOM.innerResult.textContent = `${widthInnerMils.toFixed(1)} mils`;
+							DOM.outerResult.textContent = `${widthOuterMils.toFixed(1)} mils`;
+							DOM.innerResultSecondary.textContent = `${widthInnerMm.toFixed(3)} mm`;
+							DOM.outerResultSecondary.textContent = `${widthOuterMm.toFixed(3)} mm`;
+						} else {
+							DOM.innerResult.textContent = `${widthInnerMm.toFixed(3)} mm`;
+							DOM.outerResult.textContent = `${widthOuterMm.toFixed(3)} mm`;
+							DOM.innerResultSecondary.textContent = `${widthInnerMils.toFixed(1)} mils`;
+							DOM.outerResultSecondary.textContent = `${widthOuterMils.toFixed(1)} mils`;
+						}
 
-						const widthToApply = displayUnit === 'mm' ? widthOuterMils * UNIT_MIL_TO_MM : widthOuterMils;
-						DOM.applyWidthBtn.dataset.width = widthToApply;
+						// 更新按钮的应用宽度值
+						DOM.applyWidthBtn.dataset.innerWidth = widthInnerMils;
+						DOM.applyWidthBtn.dataset.outerWidth = widthOuterMils;
 
 						// 更新按钮的点击事件
 						DOM.applyWidthBtn.onclick = function () {
@@ -539,10 +293,14 @@
 
 						DOM.innerResult.textContent = `${currentInner.toFixed(2)} A`;
 						DOM.outerResult.textContent = `${currentOuter.toFixed(2)} A`;
+						DOM.innerResultSecondary.textContent = '';
+						DOM.outerResultSecondary.textContent = '';
 					}
 				} else {
 					DOM.innerResult.textContent = '-';
 					DOM.outerResult.textContent = '-';
+					DOM.innerResultSecondary.textContent = '';
+					DOM.outerResultSecondary.textContent = '';
 				}
 			}
 
