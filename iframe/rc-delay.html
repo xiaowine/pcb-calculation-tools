@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>RC延迟计算器</title>
+		<link rel="stylesheet" href="/iframe/css/rc-delay.css" />
+		<link rel="stylesheet" href="/iframe/css/common.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="left-section">
+				<form id="rc-form">
+					<div class="form-group">
+						<label for="resistance">电阻值 (R):</label>
+						<input type="number" id="resistance" min="0" step="any" value="10" required />
+						<select id="resistance-unit">
+							<option value="1">Ω</option>
+							<option value="1000" selected>kΩ</option>
+							<option value="1000000">MΩ</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="capacitance">电容值 (C):</label>
+						<input type="number" id="capacitance" min="0" step="any" value="1" required />
+						<select id="capacitance-unit">
+							<option value="0.000000000001">pF</option>
+							<option value="0.000000001">nF</option>
+							<option value="0.000001" selected>μF</option>
+							<option value="0.001">mF</option>
+							<option value="1">F</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="circuit-type">电路类型:</label>
+						<select id="circuit-type">
+							<option value="charging" selected>充电 (上升沿)</option>
+							<option value="discharging">放电 (下降沿)</option>
+						</select>
+					</div>
+				</form>
+			</div>
+
+			<div class="right-section">
+				<p><strong>时间常数 (τ):</strong> <span id="time-constant"></span></p>
+				<div class="results" id="results">
+					<div id="result-content">
+						<table class="results-table">
+							<thead>
+								<tr>
+									<th>电压比例</th>
+									<th>时间</th>
+								</tr>
+							</thead>
+							<tbody id="results-body">
+								<!-- 结果将在这里显示 -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			function calculateRC() {
+				// 获取输入值
+				const resistance =
+					parseFloat(document.getElementById('resistance').value) * parseFloat(document.getElementById('resistance-unit').value);
+				const capacitance =
+					parseFloat(document.getElementById('capacitance').value) * parseFloat(document.getElementById('capacitance-unit').value);
+				const circuitType = document.getElementById('circuit-type').value;
+
+				// 验证输入
+				if (isNaN(resistance) || isNaN(capacitance) || resistance <= 0 || capacitance <= 0) {
+					// 如果输入无效，不显示错误消息，只清空结果
+					document.getElementById('time-constant').textContent = '无效输入';
+					document.getElementById('results-body').innerHTML = '';
+					return;
+				}
+
+				// 计算时间常数 (τ = RC)
+				const timeConstant = resistance * capacitance;
+
+				// 显示时间常数
+				const timeConstantEl = document.getElementById('time-constant');
+				if (timeConstant < 0.000001) {
+					timeConstantEl.textContent = (timeConstant * 1000000000).toFixed(6) + ' ns';
+				} else if (timeConstant < 0.001) {
+					timeConstantEl.textContent = (timeConstant * 1000000).toFixed(6) + ' μs';
+				} else if (timeConstant < 1) {
+					timeConstantEl.textContent = (timeConstant * 1000).toFixed(6) + ' ms';
+				} else {
+					timeConstantEl.textContent = timeConstant.toFixed(6) + ' s';
+				}
+
+				// 计算不同电压比例下的时间
+				const resultsBody = document.getElementById('results-body');
+				resultsBody.innerHTML = '';
+
+				const percentages = circuitType === 'charging' ? [10, 50, 63.2, 90, 99, 99.9] : [99, 90, 63.2, 50, 10, 0.1];
+
+				percentages.forEach((percent) => {
+					const row = document.createElement('tr');
+					const percentCell = document.createElement('td');
+					const timeCell = document.createElement('td');
+
+					let time;
+					if (circuitType === 'charging') {
+						// 充电: v(t) = Vs(1 - e^(-t/τ))
+						// 求解t: t = -τ * ln(1 - v(t)/Vs)
+						time = -timeConstant * Math.log(1 - percent / 100);
+					} else {
+						// 放电: v(t) = Vs * e^(-t/τ)
+						// 求解t: t = -τ * ln(v(t)/Vs)
+						time = -timeConstant * Math.log(percent / 100);
+					}
+
+					percentCell.textContent = percent + '%';
+
+					// 格式化时间显示
+					if (time < 0.000001) {
+						timeCell.textContent = (time * 1000000000).toFixed(6) + ' ns';
+					} else if (time < 0.001) {
+						timeCell.textContent = (time * 1000000).toFixed(6) + ' μs';
+					} else if (time < 1) {
+						timeCell.textContent = (time * 1000).toFixed(6) + ' ms';
+					} else {
+						timeCell.textContent = time.toFixed(6) + ' s';
+					}
+
+					row.appendChild(percentCell);
+					row.appendChild(timeCell);
+					resultsBody.appendChild(row);
+				});
+			}
+
+			// 为所有输入元素添加事件监听器
+			function setupAutoCalculation() {
+				const inputs = ['resistance', 'resistance-unit', 'capacitance', 'capacitance-unit', 'circuit-type'];
+
+				inputs.forEach((id) => {
+					const element = document.getElementById(id);
+					element.addEventListener('input', calculateRC);
+					element.addEventListener('change', calculateRC);
+				});
+			}
+
+			// 页面加载时初始化
+			document.addEventListener('DOMContentLoaded', function () {
+				calculateRC(); // 初始计算
+				setupAutoCalculation(); // 设置自动计算
+			});
+		</script>
+	</body>
+</html>

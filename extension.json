@@ -37,7 +37,12 @@
 					{
 						"id": "inductor_design",
 						"title": "电感计算...",
-						"registerFn": "open_page_inductor_design"
+						"registerFn": "open_page_inductor_calculation"
+					},
+					{
+						"id": "rc_delay_calculation",
+						"title": "RC延迟计算...",
+						"registerFn": "open_page_rc_delay_calculation"
 					},
 					{
 						"id": "resistive_divider_calculation",
@@ -70,7 +75,12 @@
 					{
 						"id": "inductor_design",
 						"title": "电感计算...",
-						"registerFn": "open_page_inductor_design"
+						"registerFn": "open_page_inductor_calculation"
+					},
+					{
+						"id": "rc_delay_calculation",
+						"title": "RC延迟计算...",
+						"registerFn": "open_page_rc_delay_calculation"
 					},
 					{
 						"id": "go_project",
@@ -98,7 +108,12 @@
 					{
 						"id": "inductor_design",
 						"title": "电感计算...",
-						"registerFn": "open_page_inductor_design"
+						"registerFn": "open_page_inductor_calculation"
+					},
+					{
+						"id": "rc_delay_calculation",
+						"title": "RC延迟计算...",
+						"registerFn": "open_page_rc_delay_calculation"
 					},
 					{
 						"id": "resistive_divider_calculation",
