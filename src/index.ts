@@ -28,7 +28,7 @@ export function open_page_inductor_calculation(): void {
 	eda.sys_IFrame.openIFrame('/iframe/inductor-design.html', 664, 664, 'inductor-design');
 }
 export function open_page_rc_delay_calculation(): void {
-	eda.sys_IFrame.openIFrame('/iframe/rc-delay.html', 560, 506, 'rc-delay');
+	eda.sys_IFrame.openIFrame('/iframe/rc-delay.html', 560, 540, 'rc-delay');
 }
 export function go_project(): void {
 	eda.sys_Window.open('https://github.com/xiaowine/pcb-calculation-tools');

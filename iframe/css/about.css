@@ -70,6 +70,7 @@ body {
 	background-repeat: no-repeat;
 	filter: brightness(0) invert(1);
 	transition: transform 0.3s ease;
+	display: block;
 }
 
 .social-icon:hover {
@@ -113,11 +114,11 @@ body {
 	}
 }
 .github-icon {
-	background: url('/iframe/assets/github.svg');
+	background-image: url('/iframe/assets/github.svg');
 }
 .bilibili-icon {
-	background: url('/iframe/assets/bilibili.svg');
+	background-image: url('/iframe/assets/bilibili.svg');
 }
 .jlc-icon {
-	background: url('/iframe/assets/jlc.svg');
+	background-image: url('/iframe/assets/jlc.svg');
 }
