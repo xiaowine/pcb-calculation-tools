@@ -1,5 +1,5 @@
 {
 	"About": "关于",
 	"LineWidthCalculation": "线宽计算",
-	"AboutDescription": "插件版本 v${1}\n\n该计算器依据 IPC-2221 标准下计算， 由此求得的结果是估算值，实际结果会随应用条件而发生变化\n\n作者：xiao_wine\n开源链接：https://github.com/xiaowine/LCEDA_Assisted_Computing_Plugin"
+	"AboutDescription": "插件版本 v${1}\n\n开源链接：https://github.com/xiaowine/pcb-calculation-tools"
 }

@@ -3,7 +3,7 @@
 	"uuid": "42e308c13d86407cac8704f9daca4d0f",
 	"displayName": "PCB计算工具",
 	"description": "一个支持线宽计算，电阻分压计算等PCB电路板数值计算的工具",
-	"version": "1.2.0",
+	"version": "1.4.0",
 	"publisher": "xiao_wine <xiaowine0#gmail.com>",
 	"engines": {
 		"eda": "^2.2.32"
@@ -30,22 +30,57 @@
 				"title": "计算",
 				"menuItems": [
 					{
+						"id": "line_width_calculation",
+						"title": "线宽计算...",
+						"registerFn": "open_page_line_width_calculation"
+					},
+					{
+						"id": "inductor_design",
+						"title": "电感计算...",
+						"registerFn": "open_page_inductor_design"
+					},
+					{
+						"id": "resistive_divider_calculation",
+						"title": "分压电阻计算...",
+						"registerFn": "open_page_resistive_divider_calculation"
+					},
+					{
+						"id": "go_project",
+						"title": "前往项目主页...",
+						"registerFn": "go_project"
+					},
+					{
 						"id": "about",
-						"title": "关于",
-						"registerFn": "about"
+						"title": "关于...",
+						"registerFn": "open_page_about"
 					}
 				]
 			}
 		],
 		"sch": [
 			{
-				"id": "home_calculation_tools",
+				"id": "sch_calculation_tools",
 				"title": "计算",
 				"menuItems": [
 					{
+						"id": "resistive_divider_calculation",
+						"title": "分压电阻计算...",
+						"registerFn": "open_page_resistive_divider_calculation"
+					},
+					{
+						"id": "inductor_design",
+						"title": "电感计算...",
+						"registerFn": "open_page_inductor_design"
+					},
+					{
+						"id": "go_project",
+						"title": "前往项目主页...",
+						"registerFn": "go_project"
+					},
+					{
 						"id": "about",
-						"title": "关于",
-						"registerFn": "about"
+						"title": "关于...",
+						"registerFn": "open_page_about"
 					}
 				]
 			}
@@ -58,17 +93,27 @@
 					{
 						"id": "line_width_calculation",
 						"title": "线宽计算...",
-						"registerFn": "line_width_calculation"
+						"registerFn": "open_page_line_width_calculation"
+					},
+					{
+						"id": "inductor_design",
+						"title": "电感计算...",
+						"registerFn": "open_page_inductor_design"
 					},
 					{
 						"id": "resistive_divider_calculation",
 						"title": "分压电阻计算...",
-						"registerFn": "resistive_divider_calculation"
+						"registerFn": "open_page_resistive_divider_calculation"
+					},
+					{
+						"id": "go_project",
+						"title": "前往项目主页...",
+						"registerFn": "go_project"
 					},
 					{
 						"id": "about",
 						"title": "关于...",
-						"registerFn": "about"
+						"registerFn": "open_page_about"
 					}
 				]
 			}
