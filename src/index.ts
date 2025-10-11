@@ -22,7 +22,7 @@ export function open_page_line_width_calculation(): void {
 	eda.sys_IFrame.openIFrame('/iframe/line-width.html', 560, 400, 'line-width');
 }
 export function open_page_resistive_divider_calculation(): void {
-	eda.sys_IFrame.openIFrame('/iframe/resistive-divider.html', 560, 610, 'resistive-divider');
+	eda.sys_IFrame.openIFrame('/iframe/resistive-divider.html', 430, 610, 'resistive-divider');
 }
 export function open_page_inductor_calculation(): void {
 	eda.sys_IFrame.openIFrame('/iframe/inductor-design.html', 664, 664, 'inductor-design');
