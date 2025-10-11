@@ -1,3 +1,10 @@
+/* 混合高精度开关样式 */
+.mix-high-precision-checkbox {
+	width: 20px;
+	height: 20px;
+	accent-color: #0078d4;
+	cursor: pointer;
+}
 .container {
 	width: 500px;
 	display: flex;

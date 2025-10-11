@@ -46,7 +46,7 @@
 					},
 					{
 						"id": "resistive_divider_calculation",
-						"title": "分压电阻计算...",
+						"title": "反馈电阻计算...",
 						"registerFn": "open_page_resistive_divider_calculation"
 					},
 					{

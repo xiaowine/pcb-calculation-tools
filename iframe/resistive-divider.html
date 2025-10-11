@@ -7,7 +7,7 @@
 		name="viewport"
 		content="width=device-width, initial-scale=1.0"
 	/>
-	<title>电压分压计算器</title>
+	<title>开关电源反馈分压电阻计算器</title>
 	<link
 		rel="stylesheet"
 		href="/iframe/css/resistive-divider.css"
@@ -23,7 +23,7 @@
 		<div class="left-section">
 			<div class="input-row">
 				<div>
-					<label for="Vin">输入电压:</label>
+					<label for="Vin">输入电压</label>
 					<input
 						type="number"
 						id="Vin"
@@ -32,34 +32,26 @@
 					/>
 				</div>
 				<div>
-					<label for="Vout">目标电压:</label>
+					<label for="Vout">反馈电压</label>
 					<input
 						type="number"
 						id="Vout"
-						value="5"
+						value="0.6"
 						step="0.1"
 					/>
 				</div>
 
 
 				<div>
-					<label for="minResistor">最小值 (Ω):</label>
+					<label for="maxSumResistor">最大电阻和(Ω)</label>
 					<input
 						type="text"
-						id="minResistor"
-						value="1k"
+						id="maxSumResistor"
+						value="10M"
 					/>
 				</div>
 				<div>
-					<label for="maxResistor">最大值 (Ω):</label>
-					<input
-						type="text"
-						id="maxResistor"
-						value="1M"
-					/>
-				</div>
-				<div>
-					<label for="offsetPercentage">允许误差 (%):</label>
+					<label for="offsetPercentage">允许误差(%)</label>
 					<input
 						type="number"
 						id="offsetPercentage"
@@ -68,22 +60,26 @@
 					/>
 				</div>
 				<div>
-					<label for="resistorSeries">电阻系列:</label>
+					<label for="resistorSeries">电阻系列</label>
 					<select id="resistorSeries">
-						<option value="E48">E48</option>
-						<option
-							value="E96"
-							selected
-						>E96</option>
-						<option value="E192">E192</option>
+						<option value="E6">E6 ±20%</option>
+						<option value="E12">E12 ±10%</option>
+						<option value="E24">E24 ±5%</option>
+						<option value="E48">E48 ±2%</option>
+						<option value="E96" selected>E96 ±1%</option>
+						<option value="E192">E192 ±0.5%</option>
 					</select>
-
-
+				</div>
+				<div>
+					<div class="mix-high-precision-row">
+						<label for="mixHighPrecision" class="mix-high-precision-label">混合高精度</label>
+						<input type="checkbox" id="mixHighPrecision" class="mix-high-precision-checkbox" />
+					</div>
 				</div>
 				
 			</div>
 
-			<button id="calculateButton">计算电阻组合</button>
+			<button id="calculateButton">计算反馈电阻组合</button>
 		</div>
 		<div class="right-section">
 			<div
@@ -94,43 +90,25 @@
 	</div>
 
 	<script>
-		const E96 = [
-			100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127, 130, 133,
-			137, 140, 143, 147, 150, 154, 158, 162, 165, 169, 174, 178, 182,
-			187, 191, 196, 200, 205, 210, 215, 221, 226, 232, 237, 243, 249,
-			255, 261, 267, 274, 280, 287, 294, 301, 309, 316, 324, 332, 340,
-			348, 357, 365, 374, 383, 392, 402, 412, 422, 432, 442, 453, 464,
-			475, 487, 499, 511, 523, 536, 549, 562, 576, 590, 604, 619, 634,
-			649, 665, 681, 698, 715, 732, 750, 768, 787, 806, 825, 845, 866,
-			887, 909, 931, 953, 976,
-		];
-
-		// E48标准值
-		const E48 = [
-			100, 105, 110, 115, 121, 127, 133, 140, 147, 154, 162, 169,
-			178, 187, 196, 205, 215, 226, 237, 249, 261, 274, 287, 301,
-			316, 332, 348, 365, 383, 402, 422, 442, 464, 487, 511, 536,
-			562, 590, 619, 649, 681, 715, 750, 787, 825, 866, 909, 953
-		];
-		// E192标准值
-		const E192 = [
-			100, 101, 102, 104, 105, 106, 107, 109, 110, 111, 113, 114, 115, 117, 118, 120,
-			121, 123, 124, 126, 127, 129, 130, 132, 133, 135, 137, 138, 140, 142, 143, 145,
-			147, 149, 150, 152, 154, 156, 158, 160, 162, 164, 165, 167, 169, 172, 174, 176,
-			178, 180, 182, 184, 187, 189, 191, 193, 196, 198, 200, 203, 205, 208, 210, 213,
-			215, 218, 221, 223, 226, 229, 232, 234, 237, 240, 243, 246, 249, 252, 255, 258,
-			261, 264, 267, 271, 274, 277, 280, 284, 287, 291, 294, 298, 301, 305, 309, 312,
-			316, 320, 324, 328, 332, 336, 340, 344, 348, 352, 357, 361, 365, 370, 374, 379,
-			383, 388, 392, 397, 402, 407, 412, 417, 422, 427, 432, 437, 442, 448, 453, 459,
-			464, 470, 475, 481, 487, 493, 499, 505, 511, 517, 523, 530, 536, 542, 549, 556,
-			562, 569, 576, 583, 590, 597, 604, 612, 619, 627, 634, 642, 649, 657, 665, 673,
-			681, 690, 698, 706, 715, 723, 732, 741, 750, 759, 768, 777, 787, 796, 806, 816,
-			825, 835, 845, 856, 866, 876, 887, 898, 909, 920, 931, 942, 953, 965, 976, 988
-		];
-		// 扩展到6个数量级
-		const E48_extended = E48.flatMap((value) => Array.from({ length: 6 }, (_, i) => value * Math.pow(10, i)));
-		const E96_extended = E96.flatMap((value) => Array.from({ length: 6 }, (_, i) => value * Math.pow(10, i)));
-		const E192_extended = E192.flatMap((value) => Array.from({ length: 6 }, (_, i) => value * Math.pow(10, i)));
+		// 动态生成标准电阻值（不使用显式数组）
+		function generateResistorSeries(E, decades = 6) {
+			const values = [];
+			for (let d = 0; d < decades; d++) {
+				const base = Math.pow(10, d + 2); // 从100Ω开始
+				for (let i = 0; i < E; i++) {
+					const value = base * Math.pow(10, i / E);
+					// 四舍五入到最接近的整数
+					values.push(Math.round(value));
+				}
+			}
+			return Array.from(new Set(values)).sort((a, b) => a - b);
+		}
+		const E6_extended = generateResistorSeries(6);
+		const E12_extended = generateResistorSeries(12);
+		const E24_extended = generateResistorSeries(24);
+		const E48_extended = generateResistorSeries(48);
+		const E96_extended = generateResistorSeries(96);
+		const E192_extended = generateResistorSeries(192);
 
 		// 辅助函数：解析带单位的电阻值
 		function parseResistorValue (value) {
@@ -150,21 +128,42 @@
 			return (Vin * R2) / (R1 + R2);
 		}
 
-		function findResistorCombinations (Vin, Vout, offsetPercentage, minResistor, maxResistor) {
+		function findResistorCombinations (Vin, Vout, offsetPercentage, maxSumResistor) {
 			const bound = (Vout * offsetPercentage) / 100;
 			let combinations = [];
 			// 获取精度选择
 			const series = document.getElementById('resistorSeries')?.value || 'E96';
-			let resistorArray = E96_extended;
-			if (series === 'E48') resistorArray = E48_extended;
-			if (series === 'E192') resistorArray = E192_extended;
+			const mixHighPrecision = document.getElementById('mixHighPrecision').checked;
+			// 系列精度从低到高排列
+			const allSeries = [
+				{ key: 'E6', arr: E6_extended },
+				{ key: 'E12', arr: E12_extended },
+				{ key: 'E24', arr: E24_extended },
+				{ key: 'E48', arr: E48_extended },
+				{ key: 'E96', arr: E96_extended },
+				{ key: 'E192', arr: E192_extended }
+			];
+			let resistorArray;
+			if (!mixHighPrecision) {
+				resistorArray = allSeries.find(s => s.key === series)?.arr || E96_extended;
+			} else {
+				// 合并当前系列及更高精度系列
+				let startIdx = allSeries.findIndex(s => s.key === series);
+				resistorArray = Array.from(new Set(
+					allSeries.slice(startIdx).flatMap(s => s.arr)
+				)).sort((a, b) => a - b);
+			}
+
+			let checkedCount = 0;
+			let matchedCount = 0;
 
 			resistorArray.forEach((R1) => {
-				if (R1 < minResistor || R1 > maxResistor) return;
 				resistorArray.forEach((R2) => {
-					if (R2 < minResistor || R2 > maxResistor) return;
+					if (R1 + R2 > maxSumResistor) return;
+					checkedCount++;
 					const VoutCalculated = calculateVoltageDivider(R1, R2, Vin);
 					if (Math.abs(VoutCalculated - Vout) <= bound) {
+						matchedCount++;
 						combinations.push({
 							R1,
 							R2,
@@ -191,24 +190,39 @@
 				return;
 			}
 
+			const targetVout = parseFloat(document.getElementById('Vout').value);
+			// 排序：输入电压误差从小到大，误差一样按R1升序，R1一样按R2升序
+			combinations.sort((a, b) => {
+				const VinInput = parseFloat(document.getElementById('Vin').value);
+				const VinA = (a.R1 + a.R2) * targetVout / a.R2;
+				const VinB = (b.R1 + b.R2) * targetVout / b.R2;
+				const errA = Math.abs(VinA - VinInput);
+				const errB = Math.abs(VinB - VinInput);
+				if (errA !== errB) return errA - errB;
+				if (a.R1 !== b.R1) return a.R1 - b.R1;
+				return a.R2 - b.R2;
+			});
+
 			combinations.forEach((combo) => {
 				const resultDiv = document.createElement('div');
 				resultDiv.classList.add('result-item');
 				resultDiv.classList.add('theme-result-item');
 
-				const errorValue = (combo.VoutCalculated - document.getElementById('Vout').value);
-				const errorPercent = (errorValue / document.getElementById('Vout').value * 100);
+				const VinCalculated = (combo.R1 + combo.R2) * targetVout / combo.R2;
+				const VinInput = parseFloat(document.getElementById('Vin').value);
+				const vinErrorValue = VinCalculated - VinInput;
+				const vinErrorPercent = (vinErrorValue / VinInput) * 100;
 
 				resultDiv.innerHTML = `
 						<div style="font-size:1.1em;">
-							<span>R1:${formatResistorValue(combo.R1)}</span>
+							<span>R1:${formatResistorValue(combo.R1)}</span><br/>
 							<span>R2:${formatResistorValue(combo.R2)}</span>
 						</div>
 						<div style="margin-top:6px;">
-							<em>输出电压: ${combo.VoutCalculated}V</em>
+							<span>输入电压: ${VinCalculated.toFixed(2)}V</span>
 						</div>
 						<div style="margin-top:2px;">
-							<em>误差: ${errorValue.toFixed(2)}V ${Math.abs(errorPercent).toFixed(2)}%</em>
+							<span>误差: ${vinErrorValue.toFixed(2)}V ${Math.abs(vinErrorPercent).toFixed(2)}%</span>
 						</div>
 					`;
 				resultsDiv.appendChild(resultDiv);
@@ -232,15 +246,12 @@
 				const Vin = document.getElementById('Vin').value;
 				const Vout = document.getElementById('Vout').value;
 				const offsetPercentage = document.getElementById('offsetPercentage').value;
-
-				const minResistorValue = parseResistorValue(document.getElementById('minResistor').value);
-				const maxResistorValue = parseResistorValue(document.getElementById('maxResistor').value);
-
-				if (minResistorValue && maxResistorValue) {
-					const combinations = findResistorCombinations(Vin, Vout, offsetPercentage, minResistorValue, maxResistorValue);
+				const maxSumResistorValue = parseResistorValue(document.getElementById('maxSumResistor').value);
+				if (maxSumResistorValue) {
+					const combinations = findResistorCombinations(Vin, Vout, offsetPercentage, maxSumResistorValue);
 					updateResults(combinations);
 				} else {
-					alert('请输入有效的电阻值（带单位 k 或 M）');
+					alert('请输入有效的电阻和最大值（带单位 k 或 M）');
 				}
 			});
 		});
