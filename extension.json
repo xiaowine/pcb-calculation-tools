@@ -4,22 +4,22 @@
 	"displayName": "PCB计算工具",
 	"description": "一个支持线宽计算，电阻分压计算等PCB电路板数值计算的工具",
 	"version": "1.5.0",
-	"publisher": "xiao_wine <xiaowine0#gmail.com>",
+	"publisher": "xiao_wine",
 	"engines": {
 		"eda": "^2.2.32"
 	},
 	"license": "Apache License",
 	"repository": {
 		"type": "extension-store",
-		"url": ""
+		"url": "https://github.com/xiaowine/pcb-calculation-tools/"
 	},
 	"categories": "Tool",
 	"keywords": ["Tool"],
 	"images": {
 		"logo": "./images/logo.png"
 	},
-	"homepage": "",
-	"bugs": "",
+	"homepage": "https://github.com/xiaowine/pcb-calculation-tools",
+	"bugs": "https://github.com/xiaowine/pcb-calculation-tools/issues",
 	"activationEvents": {},
 	"entry": "./dist/index",
 	"dependentExtensions": {},
