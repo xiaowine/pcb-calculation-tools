@@ -23,7 +23,7 @@
 		<div class="left-section">
 			<div class="input-row">
 				<div>
-					<label for="Vin">输入电压</label>
+					<label for="Vin">输出电压</label>
 					<input
 						type="number"
 						id="Vin"
@@ -79,7 +79,7 @@
 				
 			</div>
 
-			<button id="calculateButton">计算反馈电阻组合</button>
+			<button id="calculateButton">计算反馈分压电阻</button>
 		</div>
 		<div class="right-section">
 			<div
@@ -219,7 +219,7 @@
 							<span>R2:${formatResistorValue(combo.R2)}</span>
 						</div>
 						<div style="margin-top:6px;">
-							<span>输入电压: ${VinCalculated.toFixed(2)}V</span>
+							<span>输出电压: ${VinCalculated.toFixed(2)}V</span>
 						</div>
 						<div style="margin-top:2px;">
 							<span>误差: ${vinErrorValue.toFixed(2)}V ${Math.abs(vinErrorPercent).toFixed(2)}%</span>

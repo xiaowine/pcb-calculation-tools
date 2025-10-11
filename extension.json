@@ -3,7 +3,7 @@
 	"uuid": "42e308c13d86407cac8704f9daca4d0f",
 	"displayName": "PCB计算工具",
 	"description": "一个支持线宽计算，电阻分压计算等PCB电路板数值计算的工具",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"publisher": "xiao_wine",
 	"engines": {
 		"eda": "^2.2.32"
@@ -46,7 +46,7 @@
 					},
 					{
 						"id": "resistive_divider_calculation",
-						"title": "反馈电阻计算...",
+						"title": "反馈分压电阻计算...",
 						"registerFn": "open_page_resistive_divider_calculation"
 					},
 					{
