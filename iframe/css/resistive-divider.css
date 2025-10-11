@@ -6,13 +6,17 @@
 }
 
 .left-section {
-	width: 48%;
-	padding-right: 50px;
+	width: 280px;
+	width: 220px;
+	min-width: 180px;
+	max-width: 100%;
+	padding-right: 16px;
 }
 
 .right-section {
 	width: 48%;
-	padding-left: 20px;
+	flex: 1 1 0;
+	padding-left: 8px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -37,12 +41,42 @@ input[type='text'] {
 /* 新增的样式：将两个辅助输入放到同一行 */
 .input-row {
 	display: flex;
-	gap: 20px; /* 设置输入框之间的间距 */
-	margin-bottom: 20px; /* 设置底部间距 */
+	flex-wrap: wrap;
+	margin-bottom: 20px;
 }
+
+.input-row > * {
+	flex: 1 1 40%;
+	max-width: 48%;
+}
+
 
 .input-row input {
 	width: 48%; /* 每个输入框占一半宽度 */
+}
+
+/* 电阻精度选择框样式 */
+.input-row select {
+	width: 100%;
+	min-width: 80px;
+	max-width: 80px;
+	box-sizing: border-box;
+	font-size: 18px;
+	padding: 6px 8px;
+	border: 2px solid var(--input-border);
+	border-radius: 6px;
+	background-color: #fafafa;
+	color: var(--text-color);
+	margin-bottom: 20px;
+	transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+	.input-row select {
+		background-color: #232323;
+		color: var(--text-color-dark, #e0e0e0);
+		border-color: var(--input-border-dark, #444);
+	}
 }
 
 button {
@@ -54,13 +88,31 @@ button {
 
 .results {
 	padding: 20px;
-	background-color: var(--background-color);
 	border-radius: 6px;
 	box-shadow: inset 0 0 5px var(--shadow-color);
 	font-size: 16px;
 	color: var(--text-color);
-	height: 450px;
+	height: 320px;
 	overflow-y: auto;
+}
+
+/* 适配 updateResults 动态内容的样式，支持浅色和深色模式 */
+.theme-result-item {
+	margin-bottom: 16px;
+	padding: 10px;
+	border-radius: 6px;
+	border: 1px solid var(--divider-color, #e0e0e0);
+	/* background: var(--result-bg, #fafafa); */
+	color: var(--text-color);
+	transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+	.theme-result-item {
+		background: var(--result-bg-dark, #232323);
+		/* border-color: var(--divider-color-dark, #444); */
+		color: var(--text-color-dark, #e0e0e0);
+	}
 }
 
 /* 美化滚动条 */
@@ -80,4 +132,24 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
 	background-color: var(--hover-color);
+}
+
+.results-count-badge {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    font-size: 14px;
+    color: var(--text-color);
+    background: var(--result-bg, #f0f0f0);
+    border-radius: 12px;
+    padding: 2px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    pointer-events: none;
+    z-index: 2;
+}
+@media (prefers-color-scheme: dark) {
+    .results-count-badge {
+        background: var(--result-bg-dark, #232323);
+        color: var(--text-color-dark, #e0e0e0);
+    }
 }
