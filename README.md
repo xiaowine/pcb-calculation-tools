@@ -3,6 +3,9 @@
 ---
 
 ![Release Download](https://img.shields.io/github/downloads/xiaowine/pcb-calculation-tools/total?style=flat-square) [![Release Version](https://img.shields.io/github/v/release/xiaowine/pcb-calculation-tools?style=flat-square)](https://github.com/xiaowine/pcb-calculation-tools/releases/latest) [![GitHub license](https://img.shields.io/github/license/xiaowine/pcb-calculation-tools?style=flat-square)](https://github.com/xiaowine/pcb-calculation-tools/LICENSE) [![GitHub Star](https://img.shields.io/github/stars/xiaowine/pcb-calculation-tools?style=flat-square)](https://github.com/xiaowine/pcb-calculation-tools/stargazers) [![GitHub Fork](https://img.shields.io/github/forks/xiaowine/pcb-calculation-tools?style=flat-square)](https://github.com/xiaowine/pcb-calculation-tools/network/members) ![GitHub Repo size](https://img.shields.io/github/repo-size/xiaowine/pcb-calculation-tools?style=flat-square&color=3cb371) [![GitHub Repo Languages](https://img.shields.io/github/languages/top/xiaowine/pcb-calculation-tools?style=flat-square)](https://github.com/xiaowine/pcb-calculation-tools/search?l=koltin) [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2F577fkj%2FStatusBarLyric%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/xiaowine/pcb-calculation-tools/goto?ref=main) ![GitHub Star](https://img.shields.io/github/stars/xiaowine/pcb-calculation-tools.svg?style=social)
+## 本插件不在更新，大部分功能已经迁移到新插件，欢迎各位使用 
+## 新插件github仓库链接[EDA Buddy](https://github.com/xiaowine/EDA-Buddy)
+## 新插件扩展广场链接[EDA Buddy](https://ext.lceda.cn/item/xiao_wine/eda-buddy)
 
 ## 简介
 
